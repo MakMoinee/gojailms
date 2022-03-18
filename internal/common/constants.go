@@ -10,4 +10,9 @@ const (
 var (
 	SERVER_PORT             string
 	SERVER_ENABLE_PROFILING bool
+	DB_NAME                 string
+	DB_DRIVER               string
+	MYSQL_USERNAME          string
+	MYSQL_PASSWORD          string
+	CONNECTION_STRING       string
 )
