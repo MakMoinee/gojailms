@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/MakMoinee/go-mith v1.0.9
 	github.com/go-chi/cors v1.2.0
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/spf13/viper v1.9.0
 )
 

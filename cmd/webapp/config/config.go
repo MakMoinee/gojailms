@@ -22,4 +22,9 @@ func Set() {
 
 	common.SERVER_PORT = Registry.GetString("SERVER_PORT")
 	common.SERVER_ENABLE_PROFILING = Registry.GetBool("SERVER_PROFILING")
+	common.DB_NAME = Registry.GetString("DB_NAME")
+	common.DB_DRIVER = Registry.GetString("DB_DRIVER")
+	common.MYSQL_USERNAME = Registry.GetString("MYSQL_USERNAME")
+	common.MYSQL_PASSWORD = Registry.GetString("MYSQL_PASSWORD")
+	common.CONNECTION_STRING = Registry.GetString("CONNECTION_STRING")
 }

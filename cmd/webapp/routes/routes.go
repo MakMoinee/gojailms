@@ -1,14 +1,18 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/MakMoinee/go-mith/pkg/goserve"
+	"github.com/MakMoinee/gojailms/cmd/webapp/response"
 	"github.com/MakMoinee/gojailms/internal/common"
+	"github.com/MakMoinee/gojailms/internal/gojailms"
 	"github.com/go-chi/cors"
 )
 
 type routesHandler struct {
+	JailMs gojailms.JailIntf
 }
 
 type RoutesIntf interface {
@@ -17,7 +21,7 @@ type RoutesIntf interface {
 
 func newRoutes() RoutesIntf {
 	svc := routesHandler{}
-
+	svc.JailMs = gojailms.NewJailMs()
 	return &svc
 }
 
@@ -41,7 +45,21 @@ func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 }
 
 func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set(common.ContentTypeKey, common.ContentTypeValue)
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello World"))
+	log.Println("Innside Routes: GetUsers()")
+	errorBuilder := response.ErrorResponse{}
+	usersList, err := svc.JailMs.GetUsers()
+	if err != nil {
+
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if len(usersList) == 0 {
+		response.Success(w, "No Users Registered")
+		return
+	}
+
+	response.Success(w, usersList)
 }
