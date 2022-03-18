@@ -43,7 +43,26 @@ func (svc *mySqlService) Set() {
 // GetUsers - retrieve users
 func (svc *mySqlService) GetUsers() ([]models.Users, error) {
 	usersList := []models.Users{}
+	users := models.Users{}
 	var err error
+	svc.Db = svc.openDBConnection()
+	result, err := svc.Db.Query(common.GetUsersQuery)
+	if err != nil {
+		log.Println(err.Error())
+		return usersList, err
+	}
+
+	defer svc.Db.Close()
+
+	for result.Next() {
+		err = result.Scan(&users.UserID, &users.UserName, &users.UserPassword, &users.UserType)
+		if err != nil {
+			log.Println(err.Error())
+			break
+		}
+		usersList = append(usersList, users)
+	}
+	defer result.Close()
 
 	return usersList, err
 }
