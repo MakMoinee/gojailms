@@ -56,3 +56,13 @@ func ValidateUserRequest(user models.Users) error {
 	}
 	return err
 }
+
+func ValidateVisitorRequest(visitor models.Visitor) error {
+	var err error
+
+	if len(visitor.FirstName) == 0 || len(visitor.LastName) == 0 || len(visitor.Address) == 0 || len(visitor.BirthPlace) == 0 || len(visitor.BirthDate) == 0 {
+		err = errors.New("invalid or empty required parameters")
+	}
+
+	return err
+}
