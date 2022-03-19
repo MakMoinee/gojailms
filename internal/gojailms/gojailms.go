@@ -21,6 +21,9 @@ type JailIntf interface {
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
+
+	CreateInmate(inmate models.Inmates) (bool, error)
+	GetInmates() ([]models.Inmates, error)
 }
 
 func NewJailMs() JailIntf {
@@ -82,4 +85,16 @@ func (svc *JailMs) GetVisitors() ([]models.Visitor, error) {
 	log.Println("Inside gojailms:GetVisitors()")
 	visitorsList, err := service.SendGetVisitors(svc.MySqlService)
 	return visitorsList, err
+}
+
+func (svc *JailMs) CreateInmate(inmate models.Inmates) (bool, error) {
+	log.Println("Inside gojailms:CreateInmate()")
+	isUpdated, err := service.SendCreateInmate(inmate, svc.MySqlService)
+	return isUpdated, err
+}
+
+func (svc *JailMs) GetInmates() ([]models.Inmates, error) {
+	log.Println("Inside gojailms:GetInmates()")
+	list, err := service.SendGetInmates(svc.MySqlService)
+	return list, err
 }

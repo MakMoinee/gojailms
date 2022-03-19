@@ -27,6 +27,9 @@ type RoutesIntf interface {
 
 	CreateVisitor(w http.ResponseWriter, r *http.Request)
 	GetVisitors(w http.ResponseWriter, r *http.Request)
+
+	CreateInmate(w http.ResponseWriter, r *http.Request)
+	GetInmates(w http.ResponseWriter, r *http.Request)
 }
 
 func newRoutes() RoutesIntf {
@@ -59,6 +62,10 @@ func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 	//visitor
 	httpService.Router.Post(common.CreateVisitorPath, handler.CreateVisitor)
 	httpService.Router.Get(common.GetVisitorsPath, handler.GetVisitors)
+
+	//inmate
+	httpService.Router.Post(common.CreateInmatePath, handler.CreateInmate)
+	httpService.Router.Get(common.GetInmatePath, handler.GetInmates)
 }
 
 func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {

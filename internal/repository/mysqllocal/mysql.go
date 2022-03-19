@@ -29,6 +29,9 @@ type MysqlIntf interface {
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
+
+	GetInmates() ([]models.Inmates, error)
+	CreateInmate(inmate models.Inmates) (bool, error)
 }
 
 func NewUserMySqlService() MysqlIntf {
