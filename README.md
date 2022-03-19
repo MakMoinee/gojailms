@@ -25,3 +25,10 @@
 ### Delete User
 - DELETE http://localhost:8443/delete/jms/user?id=2
 - where `2` is the target id you want to delete
+### Update User
+- PUT http://localhost:8443/update/jms/user
+- Request Body: `` {
+    "userID": 2,
+    "userName": "sampleUser",
+    "userPassword": "sampleUser123"
+} ``
