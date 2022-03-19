@@ -11,3 +11,17 @@
 - Create or Import existing Database with the database name ``jaildb``
 - Run the command in the same Git Bash ``go run main.go``
 - By Default, The server will start on port 8443. Try hitting this. ``http://localhost:8443/health``
+
+## HTTP Request
+### Retrieve Users
+- GET http://localhost:8443/get/jms/users
+### Save User
+- POST http://localhost:8443/create/jms/user
+- Request Body: 
+`` {
+    "userName": "sampleUser2",
+    "userPassword": "sampleUser1234"
+}``
+### Delete User
+- DELETE http://localhost:8443/delete/jms/user?id=2
+- where `2` is the target id you want to delete
