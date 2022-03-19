@@ -35,6 +35,20 @@ func SendCreateUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, error)
 	return isUserCreated, err
 }
 
+func SendDeleteUser(id string, mysql mysqllocal.MysqlIntf) (bool, error) {
+	log.Println("Inside userService:SendDeleteUser()")
+	isDeleted := false
+	var err error
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		isDeleted, err = mysql.DeleteUser(id)
+	}()
+	wg.Wait()
+	return isDeleted, err
+}
+
 func ValidateUserRequest(user models.Users) error {
 	var err error
 	if !strings.IsStringEmpty(user.UserName) || !strings.IsStringEmpty(user.UserPassword) {

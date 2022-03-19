@@ -24,6 +24,7 @@ type mySqlService struct {
 type MysqlIntf interface {
 	GetUsers() ([]models.Users, error)
 	CreateUser(user models.Users) (bool, error)
+	DeleteUser(id string) (bool, error)
 }
 
 func NewUserMySqlService() MysqlIntf {
@@ -45,7 +46,26 @@ func (svc *mySqlService) Set() {
 // GetUsers - retrieve users
 func (svc *mySqlService) GetUsers() ([]models.Users, error) {
 	usersList := []models.Users{}
+	users := models.Users{}
 	var err error
+	svc.Db = svc.openDBConnection()
+	result, err := svc.Db.Query(common.GetUsersQuery)
+	if err != nil {
+		log.Println(err.Error())
+		return usersList, err
+	}
+
+	defer svc.Db.Close()
+
+	for result.Next() {
+		err := result.Scan(&users.UserID, &users.UserName, &users.UserPassword, &users.UserType)
+		if err != nil {
+			log.Println(err.Error())
+			return usersList, err
+		}
+		usersList = append(usersList, users)
+	}
+	defer result.Close()
 
 	return usersList, err
 }
@@ -63,7 +83,23 @@ func (svc *mySqlService) CreateUser(user models.Users) (bool, error) {
 		userCreated = false
 		return userCreated, err
 	}
+	defer svc.Db.Close()
 	return userCreated, nil
+}
+
+func (svc *mySqlService) DeleteUser(id string) (bool, error) {
+	log.Println("Inside mysql: DeleteUser()")
+	isDeleted := true
+	var err error
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.DeleteUserQuery, id)
+	_, err = svc.Db.Query(query)
+	if err != nil {
+		log.Println("mysql:DeleteUser() -> " + err.Error())
+		isDeleted = false
+	}
+	defer svc.Db.Close()
+	return isDeleted, err
 }
 
 func (svc *mySqlService) openDBConnection() *sql.DB {
