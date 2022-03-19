@@ -1,7 +1,7 @@
 # gojailms
 
 ## Installation:
-- Download Latest Release from Go here: `` ``https://go.dev/dl/ .
+- Download Latest Release from Go here: https://go.dev/dl/ .
 - Install it and open cmd and type ``go version ``. It should print the current go version installed
 - Download this repository by Git. Open the Git Bash and type this `` git clone https://github.com/MakMoinee/gojailms.git ``
 - After downloading, go to the project directory by typing in the same Git Bash Location `` cd gojailms ``
