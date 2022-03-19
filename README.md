@@ -32,3 +32,20 @@
     "userName": "sampleUser",
     "userPassword": "sampleUser123"
 } ``
+### Retrieve Visitors
+- GET http://localhost:8443/get/jms/visitors
+### Create Visitor
+- POST http://localhost:8443/create/jms/visitor
+### Create Inmate
+- POST http://localhost:8443/create/jms/inmate
+- Request Body: `` {
+    "crimeID": 1,
+    "firstName": "Sample",
+    "lastName":"Sample",
+    "middleName": "X",
+    "address":"Purok4A Poblacion Valencia City, Bukidnon",
+    "birthPlace": "Zamboanga City",
+    "birthDate": "1998-02-01"
+} ``
+### Retrieve Inmates
+- GET http://localhost:8443/get/jms/inmate
