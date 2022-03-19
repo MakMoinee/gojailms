@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -8,6 +10,8 @@ import (
 	"github.com/MakMoinee/gojailms/cmd/webapp/response"
 	"github.com/MakMoinee/gojailms/internal/common"
 	"github.com/MakMoinee/gojailms/internal/gojailms"
+	"github.com/MakMoinee/gojailms/internal/gojailms/models"
+	"github.com/MakMoinee/gojailms/internal/gojailms/service"
 	"github.com/go-chi/cors"
 )
 
@@ -17,6 +21,7 @@ type routesHandler struct {
 
 type RoutesIntf interface {
 	GetUsers(w http.ResponseWriter, r *http.Request)
+	CreateUser(w http.ResponseWriter, r *http.Request)
 }
 
 func newRoutes() RoutesIntf {
@@ -42,6 +47,7 @@ func Set(httpService *goserve.Service) {
 // initiateRoutes initialize routes
 func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 	httpService.Router.Get(common.GetUsersPath, handler.GetUsers)
+	httpService.Router.Post(common.CreateUserPath, handler.CreateUser)
 }
 
 func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -62,4 +68,56 @@ func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Success(w, usersList)
+}
+
+func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside Routes:CreateUser()")
+	user := models.Users{}
+	errorBuilder := response.ErrorResponse{}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("Routes:CreateUser() -> Reading the body error")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		log.Println("Routes:CreateUser() -> Unmarshal Error")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	// validate request
+	err = service.ValidateUserRequest(user)
+	if err != nil {
+		log.Println("Routes:CreateUser() -> Invalid Parameters")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	isUserCreated, err := svc.JailMs.CreateUser(user)
+	if err != nil {
+		errorBuilder := response.ErrorResponse{}
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if !isUserCreated {
+		errorBuilder := response.ErrorResponse{}
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = "User Not Created"
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	response.Success(w, "Successfully Created User")
 }

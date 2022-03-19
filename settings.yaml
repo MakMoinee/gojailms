@@ -8,3 +8,5 @@ MYSQL_PASSWORD: Develop@2021
 DB_NAME: jaildb
 DB_DRIVER: mysql
 CONNECTION_STRING: tcp(localhost:3306)/
+
+RETRY_SLEEP: 3s
