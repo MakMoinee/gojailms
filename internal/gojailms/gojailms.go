@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/MakMoinee/gojailms/internal/gojailms/models"
+	"github.com/MakMoinee/gojailms/internal/gojailms/service"
 	"github.com/MakMoinee/gojailms/internal/repository/mysqllocal"
 )
 
@@ -14,6 +15,7 @@ type JailMs struct {
 
 type JailIntf interface {
 	GetUsers() ([]models.Users, error)
+	CreateUser(user models.Users) (bool, error)
 }
 
 func NewJailMs() JailIntf {
@@ -45,4 +47,10 @@ func (svc *JailMs) GetUsers() ([]models.Users, error) {
 	}
 
 	return usersList, nil
+}
+
+func (svc *JailMs) CreateUser(user models.Users) (bool, error) {
+	log.Println("Inside gojailms:CreateUser()")
+	userCreated, err := service.SendCreateUser(user, svc.MySqlService)
+	return userCreated, err
 }

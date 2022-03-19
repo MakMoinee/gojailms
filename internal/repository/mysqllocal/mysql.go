@@ -2,6 +2,7 @@ package mysqllocal
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -22,6 +23,7 @@ type mySqlService struct {
 
 type MysqlIntf interface {
 	GetUsers() ([]models.Users, error)
+	CreateUser(user models.Users) (bool, error)
 }
 
 func NewUserMySqlService() MysqlIntf {
@@ -46,6 +48,22 @@ func (svc *mySqlService) GetUsers() ([]models.Users, error) {
 	var err error
 
 	return usersList, err
+}
+
+func (svc *mySqlService) CreateUser(user models.Users) (bool, error) {
+	log.Println("Inside mysql:CreateUser()")
+	userCreated := true
+
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.InsertUserQuery, user.UserName, user.UserPassword)
+
+	_, err := svc.Db.Query(query)
+	if err != nil {
+		log.Println("Error in inserting the record to db")
+		userCreated = false
+		return userCreated, err
+	}
+	return userCreated, nil
 }
 
 func (svc *mySqlService) openDBConnection() *sql.DB {
