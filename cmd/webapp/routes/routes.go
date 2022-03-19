@@ -22,6 +22,7 @@ type routesHandler struct {
 type RoutesIntf interface {
 	GetUsers(w http.ResponseWriter, r *http.Request)
 	CreateUser(w http.ResponseWriter, r *http.Request)
+	DeleteUser(w http.ResponseWriter, r *http.Request)
 }
 
 func newRoutes() RoutesIntf {
@@ -48,10 +49,11 @@ func Set(httpService *goserve.Service) {
 func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 	httpService.Router.Get(common.GetUsersPath, handler.GetUsers)
 	httpService.Router.Post(common.CreateUserPath, handler.CreateUser)
+	httpService.Router.Delete(common.DeleteUserPath, handler.DeleteUser)
 }
 
 func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	log.Println("Innside Routes: GetUsers()")
+	log.Println("Inside Routes: GetUsers()")
 	errorBuilder := response.ErrorResponse{}
 	usersList, err := svc.JailMs.GetUsers()
 	if err != nil {
@@ -120,4 +122,37 @@ func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Success(w, "Successfully Created User")
+}
+
+func (svc *routesHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside Routes: DeleteUser()")
+	query := r.URL.Query()
+	userId := query.Get("id")
+	errorBuilder := response.ErrorResponse{}
+	if len(userId) == 0 {
+		log.Println("routes:DeleteUser() -> Missing Required Parameters")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = "Missing Required Parameters"
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	isDeleted, err := svc.JailMs.DeleteUser(userId)
+	if err != nil {
+		log.Println("routes:DeleteUser() -> Error Deleting the User")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if !isDeleted {
+		log.Println("routes:DeleteUser() -> Error Deleting the User")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = "Can't Delete The User"
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	response.Success(w, "Successfully Deleted User")
 }

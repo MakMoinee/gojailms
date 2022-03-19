@@ -5,12 +5,14 @@ import "time"
 const (
 	GetUsersPath     = "/get/jms/users"
 	CreateUserPath   = "/create/jms/user"
+	DeleteUserPath   = "/delete/jms/user"
 	ContentTypeKey   = "Content-Type"
 	ContentTypeValue = "application/json; charset=UTF-8"
 	TimeFormat       = "2006-01-02 15:04:05"
 
 	GetUsersQuery   = "SELECT * FROM users;"
 	InsertUserQuery = "INSERT INTO users (userName,password,userType) VALUES ('%v','%v',2);"
+	DeleteUserQuery = "DELETE FROM users where userID=%v;"
 )
 
 var (
