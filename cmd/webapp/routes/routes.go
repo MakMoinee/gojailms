@@ -23,6 +23,7 @@ type RoutesIntf interface {
 	GetUsers(w http.ResponseWriter, r *http.Request)
 	CreateUser(w http.ResponseWriter, r *http.Request)
 	DeleteUser(w http.ResponseWriter, r *http.Request)
+	UpdateUser(w http.ResponseWriter, r *http.Request)
 
 	CreateVisitor(w http.ResponseWriter, r *http.Request)
 	GetVisitors(w http.ResponseWriter, r *http.Request)
@@ -53,6 +54,7 @@ func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 	httpService.Router.Get(common.GetUsersPath, handler.GetUsers)
 	httpService.Router.Post(common.CreateUserPath, handler.CreateUser)
 	httpService.Router.Delete(common.DeleteUserPath, handler.DeleteUser)
+	httpService.Router.Put(common.UpdateUserPath, handler.UpdateUser)
 
 	//visitor
 	httpService.Router.Post(common.CreateVisitorPath, handler.CreateVisitor)
@@ -162,4 +164,53 @@ func (svc *routesHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Success(w, "Successfully Deleted User")
+}
+
+func (svc *routesHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside Routes: UpdateUser()")
+	user := models.Users{}
+	errorBuilder := response.ErrorResponse{}
+	byteBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("routes:UpdateUser() -> Error Reading the Request Body")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+	err = json.Unmarshal(byteBody, &user)
+	if err != nil {
+		log.Println("routes:UpdateUser() -> Unmarshal Error")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	// validate request
+	err = service.ValidateUpdateUserRequest(user)
+	if err != nil {
+		log.Println("routes:UpdateUser() -> Invalid Parameters")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+	isUpdated, err := svc.JailMs.UpdateUser(user)
+	if err != nil {
+		log.Println("routes:UpdateUser() -> Error Updating the User")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if !isUpdated {
+		log.Println("routes:UpdateUser() -> Failed to update user")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = "Failed to update user"
+		response.Error(w, errorBuilder)
+		return
+	}
+	response.Success(w, "Successfully Updated User")
 }

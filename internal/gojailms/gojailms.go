@@ -17,6 +17,7 @@ type JailIntf interface {
 	GetUsers() ([]models.Users, error)
 	CreateUser(user models.Users) (bool, error)
 	DeleteUser(id string) (bool, error)
+	UpdateUser(user models.Users) (bool, error)
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
@@ -63,6 +64,12 @@ func (svc *JailMs) DeleteUser(id string) (bool, error) {
 	log.Println("Inside gojailms:DeleteUser()")
 	isDeleted, err := service.SendDeleteUser(id, svc.MySqlService)
 	return isDeleted, err
+}
+
+func (svc *JailMs) UpdateUser(user models.Users) (bool, error) {
+	log.Println("Inside gojailms:UpdateUser()")
+	isUpdated, err := service.SendUpdateUser(user, svc.MySqlService)
+	return isUpdated, err
 }
 
 func (svc *JailMs) CreateVisitor(visitor models.Visitor) (bool, error) {

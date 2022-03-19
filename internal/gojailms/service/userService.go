@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/MakMoinee/go-mith/pkg/strings"
 	"github.com/MakMoinee/gojailms/internal/common"
 	"github.com/MakMoinee/gojailms/internal/gojailms/models"
 	"github.com/MakMoinee/gojailms/internal/repository/mysqllocal"
@@ -49,10 +48,32 @@ func SendDeleteUser(id string, mysql mysqllocal.MysqlIntf) (bool, error) {
 	return isDeleted, err
 }
 
+func SendUpdateUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, error) {
+	log.Println("Inside userService:SendUpdateUser()")
+	isUpdated := false
+	var err error
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		isUpdated, err = mysql.UpdateUser(user)
+	}()
+	wg.Wait()
+	return isUpdated, err
+}
+
 func ValidateUserRequest(user models.Users) error {
 	var err error
-	if !strings.IsStringEmpty(user.UserName) || !strings.IsStringEmpty(user.UserPassword) {
+	if len(user.UserName) == 0 || len(user.UserPassword) == 0 {
 		err = errors.New("empty username or password")
+	}
+	return err
+}
+
+func ValidateUpdateUserRequest(user models.Users) error {
+	var err error
+	if len(user.UserName) == 0 || len(user.UserPassword) == 0 || user.UserID == 0 {
+		err = errors.New("empty username or password or userid")
 	}
 	return err
 }

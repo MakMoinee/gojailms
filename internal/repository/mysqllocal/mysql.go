@@ -25,6 +25,7 @@ type MysqlIntf interface {
 	GetUsers() ([]models.Users, error)
 	CreateUser(user models.Users) (bool, error)
 	DeleteUser(id string) (bool, error)
+	UpdateUser(user models.Users) (bool, error)
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
@@ -103,6 +104,20 @@ func (svc *mySqlService) DeleteUser(id string) (bool, error) {
 	}
 	defer svc.Db.Close()
 	return isDeleted, err
+}
+
+func (svc *mySqlService) UpdateUser(user models.Users) (bool, error) {
+	log.Println("Inside mysql: UpdateUser()")
+	isUpdated := true
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.UpdateUserQuery, user.UserName, user.UserPassword, user.UserID)
+	_, err := svc.Db.Query(query)
+	if err != nil {
+		log.Println("mysql:UpdateUser() -> " + err.Error())
+		isUpdated = false
+	}
+	defer svc.Db.Close()
+	return isUpdated, err
 }
 
 func (svc *mySqlService) openDBConnection() *sql.DB {
