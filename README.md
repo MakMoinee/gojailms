@@ -1,5 +1,6 @@
 # gojailms
-
+## Sequence Diagram
+![Database Schema](SequenceDiagram.png)
 ## Installation:
 - Download Latest Release from Go here: https://go.dev/dl/ .
 - Install it and open cmd and type ``go version ``. It should print the current go version installed
