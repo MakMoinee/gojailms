@@ -1,4 +1,4 @@
-# gojailms
+# gojailms - Jail Management System
 ## Sequence Diagram
 ![Database Schema](SequenceDiagram.png)
 ## Installation:
