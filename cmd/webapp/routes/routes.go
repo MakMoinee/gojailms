@@ -15,6 +15,10 @@ import (
 	"github.com/go-chi/cors"
 )
 
+type routesStruct struct {
+	RouteName  string
+	RouteValue string
+}
 type routesHandler struct {
 	JailMs gojailms.JailIntf
 }
@@ -24,6 +28,7 @@ type RoutesIntf interface {
 	CreateUser(w http.ResponseWriter, r *http.Request)
 	DeleteUser(w http.ResponseWriter, r *http.Request)
 	UpdateUser(w http.ResponseWriter, r *http.Request)
+	LogUser(w http.ResponseWriter, r *http.Request)
 
 	CreateVisitor(w http.ResponseWriter, r *http.Request)
 	GetVisitors(w http.ResponseWriter, r *http.Request)
@@ -54,18 +59,94 @@ func Set(httpService *goserve.Service) {
 
 // initiateRoutes initialize routes
 func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
+	set := make(map[string]interface{})
+	infos := []routesStruct{}
 	httpService.Router.Get(common.GetUsersPath, handler.GetUsers)
+	infos = append(infos, routesStruct{RouteName: "RetrieveUsers", RouteValue: common.GetUsersPath})
+
 	httpService.Router.Post(common.CreateUserPath, handler.CreateUser)
+	infos = append(infos, routesStruct{RouteName: "CreateUser", RouteValue: common.CreateUserPath})
+
 	httpService.Router.Delete(common.DeleteUserPath, handler.DeleteUser)
+	infos = append(infos, routesStruct{RouteName: "DeleteUser", RouteValue: common.DeleteUserPath})
+
 	httpService.Router.Put(common.UpdateUserPath, handler.UpdateUser)
+	infos = append(infos, routesStruct{RouteName: "UpdateUser", RouteValue: common.UpdateUserPath})
+
+	httpService.Router.Post(common.LogUserPath, handler.LogUser)
+	infos = append(infos, routesStruct{RouteName: "LogUser", RouteValue: common.LogUserPath})
 
 	//visitor
 	httpService.Router.Post(common.CreateVisitorPath, handler.CreateVisitor)
+	infos = append(infos, routesStruct{RouteName: "CreateVisitor", RouteValue: common.CreateVisitorPath})
+
 	httpService.Router.Get(common.GetVisitorsPath, handler.GetVisitors)
+	infos = append(infos, routesStruct{RouteName: "GetVisitors", RouteValue: common.GetVisitorsPath})
 
 	//inmate
 	httpService.Router.Post(common.CreateInmatePath, handler.CreateInmate)
+	infos = append(infos, routesStruct{RouteName: "CreateInmate", RouteValue: common.CreateInmatePath})
+
 	httpService.Router.Get(common.GetInmatePath, handler.GetInmates)
+	infos = append(infos, routesStruct{RouteName: "GetInmates", RouteValue: common.GetInmatePath})
+
+	set["routes"] = infos
+	set["version"] = common.SERVICE_VERSION
+
+	httpService.SetInfo(set)
+
+}
+
+func (svc *routesHandler) LogUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside Routes: LogUser()")
+	errorBuilder := response.ErrorResponse{}
+	user := models.Users{}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("Inside Routes:LogUser() -> Error Reading Body")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		log.Println("Inside Routes:LogUser() -> Json Unmarshal Error")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if errs := service.ValidateUserRequest(user); errs != nil {
+		log.Println("Inside Routes:LogUser() -> Invalid User Request")
+		errorBuilder.ErrorMessage = errs.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+	log.Println(user)
+	isValidUser, validUser, err := svc.JailMs.LogUser(user)
+	if err != nil {
+		log.Println("Inside routes:LogUser() -> Error in Logging In")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if !isValidUser {
+		log.Println("Inside routes:LogUser() -> Wrong credentials")
+		errorBuilder.ErrorMessage = "Wrong Username or Password"
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+	validUser.UserPassword = user.UserPassword
+	response.Success(w, validUser)
+
 }
 
 func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {

@@ -1,6 +1,7 @@
 SERVER_PORT: ":8443"
 SERVER_SSL_ENABLED: false
 SERVER_PROFILING: false
+SERVICE_VERSION: 1.0.0
 
 #mysql configurations
 MYSQL_USERNAME: root

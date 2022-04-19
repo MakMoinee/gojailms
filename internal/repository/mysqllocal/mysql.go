@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 
+	"github.com/MakMoinee/go-mith/pkg/encrypt"
 	"github.com/MakMoinee/gojailms/internal/common"
 	"github.com/MakMoinee/gojailms/internal/gojailms/models"
 )
@@ -26,6 +28,7 @@ type MysqlIntf interface {
 	CreateUser(user models.Users) (bool, error)
 	DeleteUser(id string) (bool, error)
 	UpdateUser(user models.Users) (bool, error)
+	LogUser(user models.Users) (bool, models.Users, error)
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
@@ -48,6 +51,35 @@ func (svc *mySqlService) Set() {
 	svc.ConnectionString = svc.DatabaseUser + ":" + svc.DatabasePassword + "@" + common.CONNECTION_STRING + svc.DatabaseName
 	svc.Db = svc.openDBConnection()
 	defer svc.Db.Close()
+}
+
+func (svc *mySqlService) LogUser(user models.Users) (bool, models.Users, error) {
+	log.Println("Inside mysql:CreateUser()")
+	userLogin := false
+	users := models.Users{}
+	usersList := []models.Users{}
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.LogUserQuery, user.UserName)
+	result, err := svc.Db.Query(query)
+	if err != nil {
+		log.Println(err.Error())
+		return userLogin, user, err
+	}
+	defer svc.Db.Close()
+
+	for result.Next() {
+		err := result.Scan(&users.UserID, &users.UserName, &users.UserPassword, &users.UserType)
+		if err != nil {
+			log.Println(err.Error())
+			return userLogin, user, err
+		}
+		usersList = append(usersList, users)
+	}
+	defer result.Close()
+
+	userLogin, list := svc.checkLoggingUser(usersList, user)
+
+	return userLogin, list, nil
 }
 
 // GetUsers - retrieve users
@@ -129,4 +161,21 @@ func (svc *mySqlService) openDBConnection() *sql.DB {
 		log.Println(err.Error())
 	}
 	return db
+}
+
+func (svc *mySqlService) checkLoggingUser(dbUser []models.Users, currentUser models.Users) (bool, models.Users) {
+	log.Println("Inside CheckLoggingUser()")
+	isPresent := false
+	user := models.Users{}
+	if len(dbUser) > 0 {
+		for _, data := range dbUser {
+			isMatch := encrypt.CheckPasswordHash(currentUser.UserPassword, data.UserPassword)
+			if isMatch && strings.EqualFold(currentUser.UserName, data.UserName) {
+				isPresent = true
+				user = data
+				break
+			}
+		}
+	}
+	return isPresent, user
 }

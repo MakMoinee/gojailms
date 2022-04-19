@@ -28,4 +28,5 @@ func Set() {
 	common.MYSQL_PASSWORD = Registry.GetString("MYSQL_PASSWORD")
 	common.CONNECTION_STRING = Registry.GetString("CONNECTION_STRING")
 	common.RETRY_SLEEP = Registry.GetDuration("RETRY_SLEEP")
+	common.SERVICE_VERSION = Registry.GetString("SERVICE_VERSION")
 }

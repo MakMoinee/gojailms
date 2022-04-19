@@ -30,6 +30,10 @@ func (svc *mockMySqlService) GetUsers() ([]models.Users, error) {
 	return []models.Users{}, nil
 }
 
+func (svc *mockMySqlService) LogUser(user models.Users) (bool, models.Users, error) {
+	return true, models.Users{}, nil
+}
+
 func (svc *mockMySqlService) DeleteUser(id string) (bool, error) {
 	return false, nil
 }

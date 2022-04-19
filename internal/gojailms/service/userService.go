@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/MakMoinee/go-mith/pkg/encrypt"
 	"github.com/MakMoinee/gojailms/internal/common"
 	"github.com/MakMoinee/gojailms/internal/gojailms/models"
 	"github.com/MakMoinee/gojailms/internal/repository/mysqllocal"
@@ -17,6 +18,8 @@ func SendCreateUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, error)
 	isUserCreated := false
 	var err error
 	var wg sync.WaitGroup
+	hashPas, _ := encrypt.HashPassword(user.UserPassword)
+	user.UserPassword = hashPas
 	for retries > 0 {
 		wg.Add(1)
 		go func() {
@@ -60,6 +63,22 @@ func SendUpdateUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, error)
 	}()
 	wg.Wait()
 	return isUpdated, err
+}
+
+func SendLogUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, models.Users, error) {
+	log.Println("Inside userService:SendLogUser()")
+	isValidUser := false
+	validUser := models.Users{}
+	var err error
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		isValidUser, validUser, err = mysql.LogUser(user)
+	}()
+	wg.Wait()
+
+	return isValidUser, validUser, err
 }
 
 func ValidateUserRequest(user models.Users) error {

@@ -7,6 +7,7 @@ const (
 	CreateUserPath = "/create/jms/user"
 	DeleteUserPath = "/delete/jms/user"
 	UpdateUserPath = "/update/jms/user"
+	LogUserPath    = "/log/jms/user"
 
 	CreateVisitorPath = "/create/jms/visitor"
 	GetVisitorsPath   = "/get/jms/visitors"
@@ -19,6 +20,7 @@ const (
 	TimeFormat       = "2006-01-02 15:04:05"
 
 	GetUsersQuery   = "SELECT * FROM users;"
+	LogUserQuery    = "SELECT * FROM users where userName='%v';"
 	InsertUserQuery = "INSERT INTO users (userName,password,userType) VALUES ('%v','%v',2);"
 	DeleteUserQuery = "DELETE FROM users where userID=%v;"
 	UpdateUserQuery = "UPDATE users SET userName='%v',password='%v' where userID=%v;"
@@ -39,4 +41,5 @@ var (
 	MYSQL_PASSWORD          string
 	CONNECTION_STRING       string
 	RETRY_SLEEP             time.Duration
+	SERVICE_VERSION         string
 )
