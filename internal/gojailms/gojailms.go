@@ -15,13 +15,15 @@ type JailMs struct {
 
 type JailIntf interface {
 	GetUsers() ([]models.Users, error)
-	CreateUser(user models.Users) (bool, error)
+	CreateUser(user models.Users, visitor models.Visitor) (bool, error)
 	DeleteUser(id string) (bool, error)
 	UpdateUser(user models.Users) (bool, error)
 	LogUser(user models.Users) (bool, models.Users, error)
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
+	GetVisitorByUserID(userid string) (models.Visitor, error)
+	DeleteVisitor(id string) (bool, error)
 
 	CreateInmate(inmate models.Inmates) (bool, error)
 	GetInmates() ([]models.Inmates, error)
@@ -64,9 +66,9 @@ func (svc *JailMs) LogUser(user models.Users) (bool, models.Users, error) {
 	return isValidUser, validUser, err
 }
 
-func (svc *JailMs) CreateUser(user models.Users) (bool, error) {
+func (svc *JailMs) CreateUser(user models.Users, visitor models.Visitor) (bool, error) {
 	log.Println("Inside gojailms:CreateUser()")
-	userCreated, err := service.SendCreateUser(user, svc.MySqlService)
+	userCreated, err := service.SendCreateUser(user, visitor, svc.MySqlService)
 	return userCreated, err
 }
 
@@ -104,4 +106,16 @@ func (svc *JailMs) GetInmates() ([]models.Inmates, error) {
 	log.Println("Inside gojailms:GetInmates()")
 	list, err := service.SendGetInmates(svc.MySqlService)
 	return list, err
+}
+
+func (svc *JailMs) DeleteVisitor(id string) (bool, error) {
+	log.Println("Inside gojailms:DeleteVisitor()")
+	isDeleted, err := service.SendDeleteVisitor(id, svc.MySqlService)
+	return isDeleted, err
+}
+
+func (svc *JailMs) GetVisitorByUserID(userid string) (models.Visitor, error) {
+	log.Println("Inside gojailms:GetVisitorByUserID()")
+	visitor, err := service.SendGetVisitorByUserID(userid, svc.MySqlService)
+	return visitor, err
 }

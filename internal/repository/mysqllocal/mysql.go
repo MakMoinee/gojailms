@@ -32,6 +32,8 @@ type MysqlIntf interface {
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
+	GetVisitorById(id string) (models.Visitor, error)
+	DeleteVisitor(id string) (bool, error)
 
 	GetInmates() ([]models.Inmates, error)
 	CreateInmate(inmate models.Inmates) (bool, error)
@@ -54,7 +56,7 @@ func (svc *mySqlService) Set() {
 }
 
 func (svc *mySqlService) LogUser(user models.Users) (bool, models.Users, error) {
-	log.Println("Inside mysql:CreateUser()")
+	log.Println("Inside mysql:LogUser()")
 	userLogin := false
 	users := models.Users{}
 	usersList := []models.Users{}

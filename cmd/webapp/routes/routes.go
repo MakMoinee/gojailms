@@ -32,6 +32,8 @@ type RoutesIntf interface {
 
 	CreateVisitor(w http.ResponseWriter, r *http.Request)
 	GetVisitors(w http.ResponseWriter, r *http.Request)
+	GetVisitorByUserID(w http.ResponseWriter, r *http.Request)
+	DeleteVisitor(w http.ResponseWriter, r *http.Request)
 
 	CreateInmate(w http.ResponseWriter, r *http.Request)
 	GetInmates(w http.ResponseWriter, r *http.Request)
@@ -82,6 +84,12 @@ func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 
 	httpService.Router.Get(common.GetVisitorsPath, handler.GetVisitors)
 	infos = append(infos, routesStruct{RouteName: "GetVisitors", RouteValue: common.GetVisitorsPath})
+
+	httpService.Router.Get(common.GetVisitorsByUserIDPath, handler.GetVisitorByUserID)
+	infos = append(infos, routesStruct{RouteName: "GetVisitorByUserID", RouteValue: common.GetVisitorsByUserIDPath})
+
+	httpService.Router.Delete(common.DeleteVisitorPath, handler.DeleteVisitor)
+	infos = append(infos, routesStruct{RouteName: "DeleteVisitor", RouteValue: common.DeleteVisitorPath})
 
 	//inmate
 	httpService.Router.Post(common.CreateInmatePath, handler.CreateInmate)
@@ -171,7 +179,7 @@ func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside Routes:CreateUser()")
-	user := models.Users{}
+	request := models.CreateRequest{}
 	errorBuilder := response.ErrorResponse{}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -182,7 +190,7 @@ func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = json.Unmarshal(body, &user)
+	err = json.Unmarshal(body, &request)
 	if err != nil {
 		log.Println("Routes:CreateUser() -> Unmarshal Error")
 		errorBuilder.ErrorStatus = http.StatusInternalServerError
@@ -192,7 +200,7 @@ func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate request
-	err = service.ValidateUserRequest(user)
+	err = service.ValidateUserRequest(request.LocalUser)
 	if err != nil {
 		log.Println("Routes:CreateUser() -> Invalid Parameters")
 		errorBuilder.ErrorStatus = http.StatusInternalServerError
@@ -201,7 +209,7 @@ func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isUserCreated, err := svc.JailMs.CreateUser(user)
+	isUserCreated, err := svc.JailMs.CreateUser(request.LocalUser, request.LocalVisitor)
 	if err != nil {
 		errorBuilder := response.ErrorResponse{}
 		errorBuilder.ErrorStatus = http.StatusInternalServerError

@@ -49,6 +49,12 @@ func (svc *mockMySqlService) CreateVisitor(visitor models.Visitor) (bool, error)
 func (svc *mockMySqlService) GetVisitors() ([]models.Visitor, error) {
 	return []models.Visitor{}, nil
 }
+func (svc *mockMySqlService) DeleteVisitor(id string) (bool, error) {
+	return false, nil
+}
+func (svc *mockMySqlService) GetVisitorById(id string) (models.Visitor, error) {
+	return models.Visitor{}, nil
+}
 
 func (svc *mockMySqlService) GetInmates() ([]models.Inmates, error) {
 	return []models.Inmates{mockInmate}, nil

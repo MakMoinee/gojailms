@@ -9,8 +9,10 @@ const (
 	UpdateUserPath = "/update/jms/user"
 	LogUserPath    = "/log/jms/user"
 
-	CreateVisitorPath = "/create/jms/visitor"
-	GetVisitorsPath   = "/get/jms/visitors"
+	CreateVisitorPath       = "/create/jms/visitor"
+	GetVisitorsPath         = "/get/jms/visitors"
+	GetVisitorsByUserIDPath = "/get/jms/visitor"
+	DeleteVisitorPath       = "/delete/jms/visitor"
 
 	CreateInmatePath = "/create/jms/inmate"
 	GetInmatePath    = "/get/jms/inmate"
@@ -27,6 +29,8 @@ const (
 
 	CreateVisitorQuery = "INSERT INTO visitors (userID,firstName,lastName,middleName,address,birthPlace,birthDate,lastModifiedDate,createdDate) VALUES(%v,'%v','%v','%v','%v','%v','%v',NOW(),NOW());"
 	GetVisitorsQuery   = "SELECT * FROM visitors;"
+	GetVisitorByUserID = "SELECT * FROM visitors where userID=%v;"
+	DeleteVisitor      = "DELETE FROM visitors where visitorID=%v;"
 
 	GetInmatesQuery   = "SELECT * FROM inmates;"
 	CreateInmateQuery = "INSERT INTO inmates (crimeID,firstName,lastName,middleName,address,birthPlace,birthDate,lastModifiedDate,createdDate) VALUES (%v,'%v','%v','%v','%v','%v','%v',NOW(),NOW());"

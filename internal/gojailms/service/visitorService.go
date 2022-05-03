@@ -37,3 +37,33 @@ func SendGetVisitors(mysql mysqllocal.MysqlIntf) ([]models.Visitor, error) {
 
 	return visitorsList, err
 }
+
+func SendGetVisitorByUserID(userID string, mysql mysqllocal.MysqlIntf) (models.Visitor, error) {
+	log.Println("Inside visitorService:SendGetVisitorByUserID()")
+	visitor := models.Visitor{}
+	var err error
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		visitor, err = mysql.GetVisitorById(userID)
+	}()
+	wg.Wait()
+
+	return visitor, err
+}
+
+func SendDeleteVisitor(visitorID string, mysql mysqllocal.MysqlIntf) (bool, error) {
+	log.Println("Inside visitorService:SendDeleteVisitor()")
+	isDeleted := false
+	var err error
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		isDeleted, err = mysql.DeleteVisitor(visitorID)
+	}()
+	wg.Wait()
+
+	return isDeleted, err
+}

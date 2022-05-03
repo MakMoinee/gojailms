@@ -82,3 +82,58 @@ func (svc *routesHandler) GetVisitors(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, visitorsList)
 
 }
+
+func (svc *routesHandler) DeleteVisitor(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside routes:DeleteVisitor()")
+	query := r.URL.Query()
+	visitorID := query.Get("id")
+	errorBuilder := response.ErrorResponse{}
+
+	if len(visitorID) == 0 {
+		errorBuilder.ErrorMessage = "Missing Required Parameters"
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	isDeleted, err := svc.JailMs.DeleteVisitor(visitorID)
+	if err != nil {
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if !isDeleted {
+		errorBuilder.ErrorMessage = "Failed to Delete Visitor"
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+	response.Success(w, "Successfully Deleted Visitor")
+}
+
+func (svc *routesHandler) GetVisitorByUserID(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside routes:GetVisitorByUserID()")
+	errorBuilder := response.ErrorResponse{}
+	query := r.URL.Query()
+	userID := query.Get("uid")
+
+	if len(userID) == 0 {
+		log.Println("Error in routes:GetVisitorByUserID() -> Empty Userid passed")
+		errorBuilder.ErrorMessage = "Missing Required Parameters"
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	visitor, err := svc.JailMs.GetVisitorByUserID(userID)
+	if err != nil {
+		log.Println("Error in routes:GetVisitorByUserID() -> Erorr in getting visitor by userid")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+	response.Success(w, visitor)
+}

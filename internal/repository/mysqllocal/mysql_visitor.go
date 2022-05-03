@@ -1,6 +1,7 @@
 package mysqllocal
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -60,4 +61,63 @@ func (svc *mySqlService) GetVisitors() ([]models.Visitor, error) {
 	defer result.Close()
 
 	return visitorsList, err
+}
+
+func (svc *mySqlService) GetVisitorById(userID string) (models.Visitor, error) {
+	visitor := models.Visitor{}
+	var err error
+
+	if len(userID) == 0 {
+		return visitor, errors.New("empty id")
+	}
+
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.GetVisitorByUserID, userID)
+	result, err := svc.Db.Query(query)
+	if err != nil {
+		return visitor, err
+	}
+	defer svc.Db.Close()
+	for result.Next() {
+		errs := result.Scan(
+			&visitor.VisitorID,
+			&visitor.UserID,
+			&visitor.FirstName,
+			&visitor.MiddleName,
+			&visitor.LastName,
+			&visitor.Address,
+			&visitor.BirthPlace,
+			&visitor.BirthDate,
+			&visitor.LastModifiedDate,
+			&visitor.CreatedDate,
+		)
+
+		if errs != nil {
+			log.Println("mysql_visitor:GetVisitorById() -> Error in Scanning")
+			err = errs
+			break
+		}
+	}
+	defer result.Close()
+
+	return visitor, err
+}
+
+func (svc *mySqlService) DeleteVisitor(id string) (bool, error) {
+	isDeleted := true
+	var err error
+
+	if len(id) == 0 {
+		return isDeleted, errors.New("empty id")
+	}
+
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.DeleteVisitor, id)
+	_, err = svc.Db.Query(query)
+	if err != nil {
+		isDeleted = false
+		return isDeleted, err
+	}
+
+	return isDeleted, err
 }

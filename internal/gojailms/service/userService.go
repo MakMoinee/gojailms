@@ -13,18 +13,19 @@ import (
 	"github.com/MakMoinee/gojailms/internal/repository/mysqllocal"
 )
 
-func SendCreateUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, error) {
+func SendCreateUser(user models.Users, visitor models.Visitor, mysql mysqllocal.MysqlIntf) (bool, error) {
 	retries := 3
 	isUserCreated := false
+	userTemp := user
 	var err error
 	var wg sync.WaitGroup
-	hashPas, _ := encrypt.HashPassword(user.UserPassword)
-	user.UserPassword = hashPas
+	hashPas, _ := encrypt.HashPassword(userTemp.UserPassword)
+	userTemp.UserPassword = hashPas
 	for retries > 0 {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			isUserCreated, err = mysql.CreateUser(user)
+			isUserCreated, err = mysql.CreateUser(userTemp)
 		}()
 		wg.Wait()
 		if err == nil {
@@ -34,6 +35,33 @@ func SendCreateUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, error)
 		log.Println("Retry attempt " + fmt.Sprintf("%v", retries))
 		time.Sleep(common.RETRY_SLEEP)
 	}
+
+	if isUserCreated {
+		isValidUser := false
+		isVisitorCreated := false
+		validUser := models.Users{}
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			isValidUser, validUser, err = SendLogUser(user, mysql)
+		}()
+		wg.Wait()
+
+		if isValidUser {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				visitor.UserID = validUser.UserID
+				isVisitorCreated, err = SendCreateVisitor(visitor, mysql)
+			}()
+			wg.Wait()
+		}
+
+		isUserCreated = isVisitorCreated
+
+	}
+
 	return isUserCreated, err
 }
 
