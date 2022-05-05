@@ -29,4 +29,5 @@ func Set() {
 	common.CONNECTION_STRING = Registry.GetString("CONNECTION_STRING")
 	common.RETRY_SLEEP = Registry.GetDuration("RETRY_SLEEP")
 	common.SERVICE_VERSION = Registry.GetString("SERVICE_VERSION")
+	common.AUTH_TOKEN = Registry.GetString("AUTH_TOKEN")
 }

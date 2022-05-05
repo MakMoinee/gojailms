@@ -60,6 +60,10 @@ func (svc *mockMySqlService) GetInmates() ([]models.Inmates, error) {
 	return []models.Inmates{mockInmate}, nil
 }
 
+func (svc *mockMySqlService) CreateAdmin(user models.Users) (bool, error) {
+	return false, nil
+}
+
 func (svc *mockMySqlService) CreateInmate(inmate models.Inmates) (bool, error) {
 	return true, nil
 }

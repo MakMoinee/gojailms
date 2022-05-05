@@ -134,3 +134,10 @@ func ValidateVisitorRequest(visitor models.Visitor) error {
 
 	return err
 }
+
+func SendCreateAdminUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, error) {
+	log.Println("Inside service:SendCreateAdminUser()")
+
+	isValid, err := mysql.CreateAdmin(user)
+	return isValid, err
+}

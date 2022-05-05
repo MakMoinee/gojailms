@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/MakMoinee/go-mith/pkg/goserve"
 	"github.com/MakMoinee/gojailms/cmd/webapp/response"
@@ -29,6 +30,7 @@ type RoutesIntf interface {
 	DeleteUser(w http.ResponseWriter, r *http.Request)
 	UpdateUser(w http.ResponseWriter, r *http.Request)
 	LogUser(w http.ResponseWriter, r *http.Request)
+	CreateAdminUser(w http.ResponseWriter, r *http.Request)
 
 	CreateVisitor(w http.ResponseWriter, r *http.Request)
 	GetVisitors(w http.ResponseWriter, r *http.Request)
@@ -77,6 +79,9 @@ func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 
 	httpService.Router.Post(common.LogUserPath, handler.LogUser)
 	infos = append(infos, routesStruct{RouteName: "LogUser", RouteValue: common.LogUserPath})
+
+	httpService.Router.Post(common.CreateAdminPath, handler.CreateAdminUser)
+	infos = append(infos, routesStruct{RouteName: "CreateAdminUser", RouteValue: common.CreateAdminPath})
 
 	//visitor
 	httpService.Router.Post(common.CreateVisitorPath, handler.CreateVisitor)
@@ -309,4 +314,57 @@ func (svc *routesHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.Success(w, "Successfully Updated User")
+}
+
+func (svc *routesHandler) CreateAdminUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside routes:CreateAdminUser()")
+	user := models.Users{}
+	errorBuilder := response.ErrorResponse{}
+	byteBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("Error in routes:CreateAdminUser() -> Error reading the body")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	err = json.Unmarshal(byteBody, &user)
+	if err != nil {
+		log.Println("Error in routes:CreateAdminUser() -> Error unmarshalling the body")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	token := r.Header.Get("auth-token")
+
+	if !strings.EqualFold(common.AUTH_TOKEN, token) {
+		log.Println("Error in routes:CreateAdminUser() -> Error token is not authorized")
+		errorBuilder.ErrorMessage = "not authorized"
+		errorBuilder.ErrorStatus = http.StatusForbidden
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	isCreated, err := svc.JailMs.CreateAdminUser(user)
+	if err != nil {
+		log.Println("Error in routes:CreateAdminUser() -> Error creating the admin")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if !isCreated {
+		log.Println("Error in routes:CreateAdminUser() -> Failed to create admin")
+		errorBuilder.ErrorMessage = "Failed to create admin"
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	response.Success(w, "Successfully created admin")
+
 }

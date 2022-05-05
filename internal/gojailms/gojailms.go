@@ -19,6 +19,7 @@ type JailIntf interface {
 	DeleteUser(id string) (bool, error)
 	UpdateUser(user models.Users) (bool, error)
 	LogUser(user models.Users) (bool, models.Users, error)
+	CreateAdminUser(user models.Users) (bool, error)
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
@@ -118,4 +119,10 @@ func (svc *JailMs) GetVisitorByUserID(userid string) (models.Visitor, error) {
 	log.Println("Inside gojailms:GetVisitorByUserID()")
 	visitor, err := service.SendGetVisitorByUserID(userid, svc.MySqlService)
 	return visitor, err
+}
+
+func (svc *JailMs) CreateAdminUser(user models.Users) (bool, error) {
+	log.Println("Inside gojailms:CreateAdminUser()")
+	isCreated, err := service.SendCreateAdminUser(user, svc.MySqlService)
+	return isCreated, err
 }

@@ -37,6 +37,8 @@ type MysqlIntf interface {
 
 	GetInmates() ([]models.Inmates, error)
 	CreateInmate(inmate models.Inmates) (bool, error)
+
+	CreateAdmin(user models.Users) (bool, error)
 }
 
 func NewUserMySqlService() MysqlIntf {
