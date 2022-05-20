@@ -3,7 +3,7 @@ module github.com/MakMoinee/gojailms
 go 1.18
 
 require (
-	github.com/MakMoinee/go-mith v1.1.6
+	github.com/MakMoinee/go-mith v1.1.7
 	github.com/go-chi/cors v1.2.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/spf13/viper v1.11.0

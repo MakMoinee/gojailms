@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/MakMoinee/gojailms/cmd/webapp/response"
+	"github.com/MakMoinee/go-mith/pkg/response"
 	"github.com/MakMoinee/gojailms/internal/gojailms/models"
 	"github.com/MakMoinee/gojailms/internal/gojailms/service"
 )

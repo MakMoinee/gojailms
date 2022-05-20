@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/MakMoinee/go-mith/pkg/goserve"
-	"github.com/MakMoinee/gojailms/cmd/webapp/response"
+	"github.com/MakMoinee/go-mith/pkg/response"
 	"github.com/MakMoinee/gojailms/internal/common"
 	"github.com/MakMoinee/gojailms/internal/gojailms"
 	"github.com/MakMoinee/gojailms/internal/gojailms/models"
