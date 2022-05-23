@@ -1,0 +1,246 @@
+{
+	"info": {
+		"_postman_id": "c75d66ec-7635-422a-8903-edf200e78ed7",
+		"name": "JAILMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Retrieve Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/get/jms/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"get",
+						"jms",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"userID\": 1,\r\n        \"userName\": \"ken\",\r\n        \"userPassword\": \"ken123\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8443/delete/jms/user?id=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8443",
+					"path": [
+						"delete",
+						"jms",
+						"user"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": {\r\n        \"userName\": \"sample\",\r\n        \"userPassword\": \"sample123\",\r\n        \"userType\": 2\r\n    },\r\n    \"visitor\": {\r\n        \"firstName\": \"User\",\r\n        \"lastName\": \"X\",\r\n        \"middleName\": \"User\",\r\n        \"address\": \" Valencia City, Bukidnon\",\r\n        \"birthPlace\": \"BPH Kibawer\",\r\n        \"birthDate\": \"1998-10-13 11:45:18\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8443/create/jms/user",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8443",
+					"path": [
+						"create",
+						"jms",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Visitors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/get/jms/visitors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"get",
+						"jms",
+						"visitors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Visitor",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/delete/jms/visitor?id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"delete",
+						"jms",
+						"visitor"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"sample\",\r\n    \"userPassword\": \"1234567\",\r\n    \"userType\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8443/log/jms/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"log",
+						"jms",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Admin User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "auth-token",
+						"value": "ae6ec6ca-0fba-4e27-9f81-8de1274a5ee4",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"admin\",\r\n    \"userPassword\": \"admin123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8443/create/admin/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"create",
+						"admin",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Forgot Pass",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"sample\",\r\n    \"userPassword\": \"sample1234\",\r\n    \"firstName\": \"User\",\r\n    \"lastName\": \"X\",\r\n    \"middleName\": \"User\",\r\n    \"birthPlace\": \"BPH Kibawer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8443/forgot/user/pass",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"forgot",
+						"user",
+						"pass"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
