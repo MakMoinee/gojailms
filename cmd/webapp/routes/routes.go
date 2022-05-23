@@ -396,7 +396,7 @@ func (svc *routesHandler) UpdateUserVisitor(w http.ResponseWriter, r *http.Reque
 	token := r.Header.Get("auth-token")
 	userVisitor.Token = token
 	isUpdated, err := svc.JailMs.UpdateUserVisitor(userVisitor)
-	if strings.EqualFold(err.Error(), "not authorized") {
+	if err != nil && strings.EqualFold(err.Error(), "not authorized") {
 		log.Println("Error in routes:UpdateUserVisitor() -> not authorized")
 		errorBuilder.ErrorMessage = err.Error()
 		errorBuilder.ErrorStatus = http.StatusForbidden
