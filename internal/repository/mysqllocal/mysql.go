@@ -29,6 +29,7 @@ type MysqlIntf interface {
 	DeleteUser(id string) (bool, error)
 	UpdateUser(user models.Users) (bool, error)
 	LogUser(user models.Users) (bool, models.Users, error)
+	GetUserVisitor(userVisitor models.UserVisitor) (models.UserVisitor, error)
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
 	GetVisitors() ([]models.Visitor, error)
@@ -182,4 +183,31 @@ func (svc *mySqlService) checkLoggingUser(dbUser []models.Users, currentUser mod
 		}
 	}
 	return isPresent, user
+}
+
+func (svc *mySqlService) GetUserVisitor(requestUserVisitor models.UserVisitor) (models.UserVisitor, error) {
+	log.Println("Inside GetUserVisitor ...")
+	userVisitor := models.UserVisitor{}
+	var err error
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.GetUserVisitorQuery, requestUserVisitor.FirstName, requestUserVisitor.LastName, requestUserVisitor.MiddleName, requestUserVisitor.UserName)
+	result, err := svc.Db.Query(query)
+	defer svc.Db.Close()
+	defer result.Close()
+	for result.Next() {
+		err := result.Scan(
+			&userVisitor.UserID,
+			&userVisitor.UserName,
+			&userVisitor.FirstName,
+			&userVisitor.LastName,
+			&userVisitor.MiddleName,
+			&userVisitor.BirthPlace,
+		)
+		if err != nil {
+			log.Println(err.Error())
+			return userVisitor, err
+		}
+	}
+
+	return userVisitor, err
 }

@@ -64,6 +64,14 @@ func (svc *mockMySqlService) CreateAdmin(user models.Users) (bool, error) {
 	return false, nil
 }
 
+func (svc *mockMySqlService) UpdateUserVisitor(userVisitor models.UserVisitor) (bool, error) {
+	return false, nil
+}
+
+func (svc *mockMySqlService) GetUserVisitor(requestUserVisitor models.UserVisitor) (models.UserVisitor, error) {
+	return models.UserVisitor{}, nil
+}
+
 func (svc *mockMySqlService) CreateInmate(inmate models.Inmates) (bool, error) {
 	return true, nil
 }

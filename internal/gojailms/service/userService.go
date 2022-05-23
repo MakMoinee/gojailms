@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"reflect"
+	"strings"
 	"sync"
 	"time"
 
@@ -140,4 +142,72 @@ func SendCreateAdminUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, e
 
 	isValid, err := mysql.CreateAdmin(user)
 	return isValid, err
+}
+
+func SendUpdateUserVisitor(userVisitor models.UserVisitor, mysql mysqllocal.MysqlIntf) (bool, error) {
+	log.Println("Inside service:SendUpdateUserVisitor() ...")
+	isUpdated := false
+	var err error
+	var wg sync.WaitGroup
+
+	newUserVisitor := models.UserVisitor{}
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		newUserVisitor, err = mysql.GetUserVisitor(userVisitor)
+	}()
+	wg.Wait()
+
+	if err != nil {
+		return isUpdated, err
+	}
+
+	if newUserVisitor.UserID == 1 && len(newUserVisitor.Token) == 0 && !strings.EqualFold(common.AUTH_TOKEN, newUserVisitor.Token) {
+		log.Println("Not Authorized")
+		return isUpdated, errors.New("not authorized")
+	}
+
+	if reflect.DeepEqual(newUserVisitor, models.UserVisitor{}) {
+		log.Println("Inside service:SendUpdateUserVisitor() -> Error: Empty Result")
+		return isUpdated, errors.New("empty result")
+	}
+
+	userVisitor.UserID = newUserVisitor.UserID
+	isValid := ValidateUserVisitor(userVisitor)
+	if !isValid {
+		log.Println("Inside service:SendUpdateUserVisitor() -> Error: Not Valid Parameters")
+		return isUpdated, errors.New("not valid parameters")
+	}
+
+	user := models.Users{}
+	user.UserID = userVisitor.UserID
+	user.UserName = userVisitor.UserName
+	user.UserType = 2
+	hashPass, _ := encrypt.HashPassword(userVisitor.UserPassword)
+	user.UserPassword = hashPass
+	isUpdated, err = mysql.UpdateUser(user)
+
+	return isUpdated, err
+}
+
+func ValidateUserVisitor(userVisitor models.UserVisitor) bool {
+	log.Println("Inside service:ValidateUserVisitor() ...")
+	isValid := false
+	isUserValid := false
+	isVisitorValid := false
+
+	//check user
+	if len(userVisitor.UserName) != 0 && userVisitor.UserID > 0 && len(userVisitor.UserPassword) > 0 {
+		isUserValid = true
+	}
+
+	//check visitor
+	if len(userVisitor.FirstName) != 0 && len(userVisitor.LastName) > 0 && len(userVisitor.MiddleName) > 0 && len(userVisitor.BirthPlace) > 0 {
+		isVisitorValid = true
+	}
+
+	isValid = (isUserValid == isVisitorValid)
+
+	return isValid
 }

@@ -31,6 +31,7 @@ type RoutesIntf interface {
 	UpdateUser(w http.ResponseWriter, r *http.Request)
 	LogUser(w http.ResponseWriter, r *http.Request)
 	CreateAdminUser(w http.ResponseWriter, r *http.Request)
+	UpdateUserVisitor(w http.ResponseWriter, r *http.Request)
 
 	CreateVisitor(w http.ResponseWriter, r *http.Request)
 	GetVisitors(w http.ResponseWriter, r *http.Request)
@@ -82,6 +83,9 @@ func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 
 	httpService.Router.Post(common.CreateAdminPath, handler.CreateAdminUser)
 	infos = append(infos, routesStruct{RouteName: "CreateAdminUser", RouteValue: common.CreateAdminPath})
+
+	httpService.Router.Post(common.UpdateUserVisitorPath, handler.UpdateUserVisitor)
+	infos = append(infos, routesStruct{RouteName: "ForgotPassword", RouteValue: common.UpdateUserVisitorPath})
 
 	//visitor
 	httpService.Router.Post(common.CreateVisitorPath, handler.CreateVisitor)
@@ -367,4 +371,52 @@ func (svc *routesHandler) CreateAdminUser(w http.ResponseWriter, r *http.Request
 
 	response.Success(w, "Successfully created admin")
 
+}
+
+func (svc *routesHandler) UpdateUserVisitor(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside routes:UpdateUserVisitor() ...")
+	userVisitor := models.UserVisitor{}
+	errorBuilder := response.ErrorResponse{}
+	byteBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("Error in routes:UpdateUserVisitor() -> Error reading the body")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+	err = json.Unmarshal(byteBody, &userVisitor)
+	if err != nil {
+		log.Println("Error in routes:UpdateUserVisitor() -> Error unmarshalling the body")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+	token := r.Header.Get("auth-token")
+	userVisitor.Token = token
+	isUpdated, err := svc.JailMs.UpdateUserVisitor(userVisitor)
+	if strings.EqualFold(err.Error(), "not authorized") {
+		log.Println("Error in routes:UpdateUserVisitor() -> not authorized")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusForbidden
+		response.Error(w, errorBuilder)
+		return
+	} else if err != nil {
+		log.Println("Error in routes:UpdateUserVisitor() -> Error updating password")
+		errorBuilder.ErrorMessage = err.Error()
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if !isUpdated {
+		log.Println("Error in routes:UpdateUserVisitor() -> Error updating password")
+		errorBuilder.ErrorMessage = "failed to update password"
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	response.Success(w, "Successfully updated password")
 }

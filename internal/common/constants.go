@@ -3,12 +3,13 @@ package common
 import "time"
 
 const (
-	GetUsersPath    = "/get/jms/users"
-	CreateUserPath  = "/create/jms/user"
-	DeleteUserPath  = "/delete/jms/user"
-	UpdateUserPath  = "/update/jms/user"
-	LogUserPath     = "/log/jms/user"
-	CreateAdminPath = "/create/admin/user"
+	GetUsersPath          = "/get/jms/users"
+	CreateUserPath        = "/create/jms/user"
+	DeleteUserPath        = "/delete/jms/user"
+	UpdateUserPath        = "/update/jms/user"
+	LogUserPath           = "/log/jms/user"
+	CreateAdminPath       = "/create/admin/user"
+	UpdateUserVisitorPath = "/forgot/user/pass"
 
 	CreateVisitorPath       = "/create/jms/visitor"
 	GetVisitorsPath         = "/get/jms/visitors"
@@ -28,6 +29,7 @@ const (
 	InsertAdminUserQuery = "INSERT INTO users (userName,password,userType) VALUES ('%v','%v',1);"
 	DeleteUserQuery      = "DELETE FROM users where userID=%v;"
 	UpdateUserQuery      = "UPDATE users SET userName='%v',password='%v' where userID=%v;"
+	GetUserVisitorQuery  = "SELECT * FROM vwuservisitor where firstName='%v' and lastName='%v' and middleName='%v' and userName='%v' LIMIT 1;"
 
 	CreateVisitorQuery = "INSERT INTO visitors (userID,firstName,lastName,middleName,address,birthPlace,birthDate,lastModifiedDate,createdDate) VALUES(%v,'%v','%v','%v','%v','%v','%v',NOW(),NOW());"
 	GetVisitorsQuery   = "SELECT * FROM visitors;"
