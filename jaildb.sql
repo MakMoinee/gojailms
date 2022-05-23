@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : Local DB
+ Source Server         : Local
  Source Server Type    : MySQL
- Source Server Version : 80027
+ Source Server Version : 80029
  Source Host           : localhost:3306
  Source Schema         : jaildb
 
  Target Server Type    : MySQL
- Target Server Version : 80027
+ Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 06/05/2022 13:43:47
+ Date: 23/05/2022 21:43:58
 */
 
 SET NAMES utf8mb4;
@@ -30,7 +30,7 @@ CREATE TABLE `crime`  (
   `lastModifiedDate` datetime NOT NULL,
   `createdDate` datetime NOT NULL,
   PRIMARY KEY (`crimeID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crime
@@ -52,13 +52,12 @@ CREATE TABLE `inmates`  (
   `lastModifiedDate` datetime NOT NULL,
   `createdDate` datetime NOT NULL,
   PRIMARY KEY (`inmateID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of inmates
 -- ----------------------------
 INSERT INTO `inmates` VALUES (1, 1, 'Sample', 'Sample', 'X', 'Purok4A Poblacion Valencia City, Bukidnon', 'Zamboanga City', '1998-02-01 00:00:00', '2022-03-19 20:42:46', '2022-03-19 20:42:46');
-INSERT INTO `inmates` VALUES (2, 1, 'Sample', 'Sample', 'X', 'Purok4A Poblacion Valencia City, Bukidnon', 'Zamboanga City', '1998-02-01 00:00:00', '2022-03-19 22:05:53', '2022-03-19 22:05:53');
 
 -- ----------------------------
 -- Table structure for users
@@ -67,21 +66,17 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users`  (
   `userID` int NOT NULL AUTO_INCREMENT,
   `userName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `password` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `userType` int NOT NULL,
   PRIMARY KEY (`userID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (8, 'ken', '$2a$14$DNxpB0cl.Mo2WPJ2az248e2W5sOotenpMWcoBAyL2VBxPGOc6wh1i', 2);
-INSERT INTO `users` VALUES (14, 'mak12', '$2a$14$ZFdWuIFIoAvUImivraVMPeTIbE0DN2VwTlJO5mT8HULwm7ZkoFpaq', 2);
-INSERT INTO `users` VALUES (18, 'mak12', '$2a$14$suA/RimIfvJg.Zrh./bjTOgEs5ibBoSNnuCEd2KpCuYxPsU8EBn.a', 2);
-INSERT INTO `users` VALUES (38, 'sam123', '$2a$14$jUM/TIzvKadzcyYZPOR5COqvyZD4YmHzGpY0xNjIRtPtOyoVVTypy', 2);
-INSERT INTO `users` VALUES (39, 'hello', '$2a$14$J8AFbEPdIiLxgnYksilmneksv4.9phJshJlllLwzcdhN9sgdtNgwu', 2);
-INSERT INTO `users` VALUES (40, 'hello', '$2a$14$6gdm1gqkWB5PuU2n8F3DEuXCUgdNXTWxMuZjF2vQhj9WmX6oNITFG', 2);
-INSERT INTO `users` VALUES (41, 'admin', '$2a$14$SIqCm4uqCg3JiaxjCCCRjOoVdqFlG4jG1Pe8BGQaKcjT2TuyueKdW', 1);
+INSERT INTO `users` VALUES (4, 'admin', '$2a$14$LB/JqF5eYUcogIs2/L0kbu5AzxYeMhIjyYzPNbM0Nrl9DkATYezY.', 1);
+INSERT INTO `users` VALUES (5, 'user', '$2a$14$TGT/70/VgVWloX2XxXhGAOJEQFS2SPSxuIZyVIF33BLQnkVXWIRLm', 2);
+INSERT INTO `users` VALUES (6, 'sample', '$2a$14$.6kwBoiXe8DT80nbMnvQ2eh9sOJp6xqZKMta9ssuoiKkUu9y5n0Wq', 2);
 
 -- ----------------------------
 -- Table structure for visitors
@@ -99,21 +94,24 @@ CREATE TABLE `visitors`  (
   `lastModifiedDate` datetime NOT NULL,
   `createdDate` datetime NOT NULL,
   PRIMARY KEY (`visitorID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of visitors
 -- ----------------------------
-INSERT INTO `visitors` VALUES (1, 2, 'admin', 'admin', 'X', 'None', 'none', '1998-10-13 11:45:18', '2022-03-19 17:49:01', '2022-03-19 17:49:01');
-INSERT INTO `visitors` VALUES (5, 14, 'Kennen', 'Borbon', 'Comaling', 'Purok 4A Poblacion, Valencia City, Bukidnon', 'New Bataan, Compostella Valley', '1998-10-13 11:45:18', '2022-05-02 23:36:41', '2022-05-02 23:36:41');
-INSERT INTO `visitors` VALUES (15, 38, 'Kennen', 'Borbon', 'Comaling', 'Purok 4A Poblacion, Valencia City, Bukidnon', 'New Bataan, Compostella Valley', '1998-10-13 11:45:18', '2022-05-03 18:46:07', '2022-05-03 18:46:07');
-INSERT INTO `visitors` VALUES (16, 39, 'Hello', 'Hello', 'X', 'NA', 'NA', '2022-05-03 00:00:00', '2022-05-03 19:09:18', '2022-05-03 19:09:18');
-INSERT INTO `visitors` VALUES (17, 39, 'Hello', 'Hello', 'X', 'NA', 'NA', '2022-05-03 00:00:00', '2022-05-03 19:09:21', '2022-05-03 19:09:21');
+INSERT INTO `visitors` VALUES (2, 3, 'Kennen', 'Borbon', 'Comaling', 'Purok 4A Poblacion, Valencia City, Bukidnon', 'New Bataan, Compostella Valley', '1998-10-13 11:45:18', '2022-05-06 22:29:45', '2022-05-06 22:29:45');
+INSERT INTO `visitors` VALUES (3, 6, 'User', 'X', 'User', ' Valencia City, Bukidnon', 'BPH Kibawer', '1998-10-13 11:45:18', '2022-05-10 18:13:20', '2022-05-10 18:13:20');
 
 -- ----------------------------
 -- View structure for vwgetallinmates
 -- ----------------------------
 DROP VIEW IF EXISTS `vwgetallinmates`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vwgetallinmates` AS select `inmates`.`inmateID` AS `inmateID`,`inmates`.`crimeID` AS `crimeID`,`inmates`.`firstName` AS `firstName`,`inmates`.`lastName` AS `lastName`,`inmates`.`middleName` AS `middleName`,`inmates`.`address` AS `address`,`inmates`.`birthPlace` AS `birthPlace`,`inmates`.`birthDate` AS `birthDate`,`crime`.`crimeDescription` AS `crimeDescription`,`crime`.`sentence` AS `sentence`,`inmates`.`lastModifiedDate` AS `lastModifiedDate`,`inmates`.`createdDate` AS `createdDate` from (`inmates` join `crime` on((`inmates`.`crimeID` = `crime`.`crimeID`)));
+
+-- ----------------------------
+-- View structure for vwuservisitor
+-- ----------------------------
+DROP VIEW IF EXISTS `vwuservisitor`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vwuservisitor` AS select `users`.`userID` AS `userID`,`users`.`userName` AS `userName`,`visitors`.`firstName` AS `firstName`,`visitors`.`lastName` AS `lastName`,`visitors`.`middleName` AS `middleName`,`visitors`.`birthPlace` AS `birthPlace` from (`users` join `visitors` on((`users`.`userID` = `visitors`.`userID`)));
 
 SET FOREIGN_KEY_CHECKS = 1;
