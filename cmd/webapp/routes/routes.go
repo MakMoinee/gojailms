@@ -116,49 +116,43 @@ func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 
 func (svc *routesHandler) LogUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside Routes: LogUser()")
-	errorBuilder := response.ErrorResponse{}
 	user := models.Users{}
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("Inside Routes:LogUser() -> Error Reading Body")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	err = json.Unmarshal(body, &user)
 	if err != nil {
 		log.Println("Inside Routes:LogUser() -> Json Unmarshal Error")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	if errs := service.ValidateUserRequest(user); errs != nil {
 		log.Println("Inside Routes:LogUser() -> Invalid User Request")
-		errorBuilder.ErrorMessage = errs.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 	log.Println(user)
 	isValidUser, validUser, err := svc.JailMs.LogUser(user)
 	if err != nil {
 		log.Println("Inside routes:LogUser() -> Error in Logging In")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	if !isValidUser {
 		log.Println("Inside routes:LogUser() -> Wrong credentials")
-		errorBuilder.ErrorMessage = "Wrong Username or Password"
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder("Wrong Username or Password", http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 	validUser.UserPassword = user.UserPassword
@@ -168,13 +162,11 @@ func (svc *routesHandler) LogUser(w http.ResponseWriter, r *http.Request) {
 
 func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside Routes: GetUsers()")
-	errorBuilder := response.ErrorResponse{}
 	usersList, err := svc.JailMs.GetUsers()
 	if err != nil {
 
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
@@ -189,22 +181,19 @@ func (svc *routesHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside Routes:CreateUser()")
 	request := models.CreateRequest{}
-	errorBuilder := response.ErrorResponse{}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("Routes:CreateUser() -> Reading the body error")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	err = json.Unmarshal(body, &request)
 	if err != nil {
 		log.Println("Routes:CreateUser() -> Unmarshal Error")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
@@ -212,83 +201,71 @@ func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	err = service.ValidateUserRequest(request.LocalUser)
 	if err != nil {
 		log.Println("Routes:CreateUser() -> Invalid Parameters")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	isUserCreated, err := svc.JailMs.CreateUser(request.LocalUser, request.LocalVisitor)
 	if err != nil {
-		errorBuilder := response.ErrorResponse{}
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	if !isUserCreated {
-		errorBuilder := response.ErrorResponse{}
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = "User Not Created"
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder("User Not Created", http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
-	response.Success(w, "Successfully Created User")
+	response.Response(w, response.NewSuccessBuilder("Successfully Created User"))
 }
 
 func (svc *routesHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside Routes: DeleteUser()")
 	query := r.URL.Query()
 	userId := query.Get("id")
-	errorBuilder := response.ErrorResponse{}
 	if len(userId) == 0 {
 		log.Println("routes:DeleteUser() -> Missing Required Parameters")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = "Missing Required Parameters"
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder("Missing Required Parameters", http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	isDeleted, err := svc.JailMs.DeleteUser(userId)
 	if err != nil {
 		log.Println("routes:DeleteUser() -> Error Deleting the User")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	if !isDeleted {
 		log.Println("routes:DeleteUser() -> Error Deleting the User")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = "Can't Delete The User"
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder("Can't Delete The User", http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
-	response.Success(w, "Successfully Deleted User")
+	response.Response(w, response.NewSuccessBuilder("Successfully Deleted User"))
 }
 
 func (svc *routesHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside Routes: UpdateUser()")
 	user := models.Users{}
-	errorBuilder := response.ErrorResponse{}
 	byteBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("routes:UpdateUser() -> Error Reading the Request Body")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 	err = json.Unmarshal(byteBody, &user)
 	if err != nil {
 		log.Println("routes:UpdateUser() -> Unmarshal Error")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
@@ -296,49 +273,43 @@ func (svc *routesHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	err = service.ValidateUpdateUserRequest(user)
 	if err != nil {
 		log.Println("routes:UpdateUser() -> Invalid Parameters")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 	isUpdated, err := svc.JailMs.UpdateUser(user)
 	if err != nil {
 		log.Println("routes:UpdateUser() -> Error Updating the User")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = err.Error()
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	if !isUpdated {
 		log.Println("routes:UpdateUser() -> Failed to update user")
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		errorBuilder.ErrorMessage = "Failed to update user"
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder("Failed to update user", http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
-	response.Success(w, "Successfully Updated User")
+	response.Response(w, response.NewSuccessBuilder("Successfully Updated User"))
 }
 
 func (svc *routesHandler) CreateAdminUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside routes:CreateAdminUser()")
 	user := models.Users{}
-	errorBuilder := response.ErrorResponse{}
 	byteBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("Error in routes:CreateAdminUser() -> Error reading the body")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	err = json.Unmarshal(byteBody, &user)
 	if err != nil {
 		log.Println("Error in routes:CreateAdminUser() -> Error unmarshalling the body")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
@@ -346,51 +317,45 @@ func (svc *routesHandler) CreateAdminUser(w http.ResponseWriter, r *http.Request
 
 	if !strings.EqualFold(common.AUTH_TOKEN, token) {
 		log.Println("Error in routes:CreateAdminUser() -> Error token is not authorized")
-		errorBuilder.ErrorMessage = "not authorized"
-		errorBuilder.ErrorStatus = http.StatusForbidden
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder("not authorized", http.StatusForbidden)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	isCreated, err := svc.JailMs.CreateAdminUser(user)
 	if err != nil {
 		log.Println("Error in routes:CreateAdminUser() -> Error creating the admin")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	if !isCreated {
 		log.Println("Error in routes:CreateAdminUser() -> Failed to create admin")
-		errorBuilder.ErrorMessage = "Failed to create admin"
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder("Failed to create admin", http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
-	response.Success(w, "Successfully created admin")
+	response.Response(w, response.NewSuccessBuilder("Successfully created admin"))
 
 }
 
 func (svc *routesHandler) UpdateUserVisitor(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside routes:UpdateUserVisitor() ...")
 	userVisitor := models.UserVisitor{}
-	errorBuilder := response.ErrorResponse{}
 	byteBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("Error in routes:UpdateUserVisitor() -> Error reading the body")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 	err = json.Unmarshal(byteBody, &userVisitor)
 	if err != nil {
 		log.Println("Error in routes:UpdateUserVisitor() -> Error unmarshalling the body")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 	token := r.Header.Get("auth-token")
@@ -398,25 +363,22 @@ func (svc *routesHandler) UpdateUserVisitor(w http.ResponseWriter, r *http.Reque
 	isUpdated, err := svc.JailMs.UpdateUserVisitor(userVisitor)
 	if err != nil && strings.EqualFold(err.Error(), "not authorized") {
 		log.Println("Error in routes:UpdateUserVisitor() -> not authorized")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusForbidden
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusForbidden)
+		response.Response(w, errorBuilder)
 		return
 	} else if err != nil {
 		log.Println("Error in routes:UpdateUserVisitor() -> Error updating password")
-		errorBuilder.ErrorMessage = err.Error()
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder(err.Error(), http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
 	if !isUpdated {
 		log.Println("Error in routes:UpdateUserVisitor() -> Error updating password")
-		errorBuilder.ErrorMessage = "failed to update password"
-		errorBuilder.ErrorStatus = http.StatusInternalServerError
-		response.Error(w, errorBuilder)
+		errorBuilder := response.NewErrorBuilder("failed to update password", http.StatusInternalServerError)
+		response.Response(w, errorBuilder)
 		return
 	}
 
-	response.Success(w, "Successfully updated password")
+	response.Response(w, response.NewSuccessBuilder("Successfully updated password"))
 }
