@@ -9,6 +9,7 @@ type Visitor struct {
 	Address          string `json:"address"`
 	BirthPlace       string `json:"birthPlace"`
 	BirthDate        string `json:"birthDate"`
+	ContactNumber    string `json:"contactNumber,omitempty"`
 	LastModifiedDate string `json:"lastModifiedDate"`
 	CreatedDate      string `json:"createdDate"`
 }
@@ -25,6 +26,7 @@ type UserVisitor struct {
 	Address          string `json:"address,omitempty"`
 	BirthPlace       string `json:"birthPlace,omitempty"`
 	BirthDate        string `json:"birthDate,omitempty"`
+	ContactNumber    string `json:"contactNumber,omitempty"`
 	LastModifiedDate string `json:"lastModifiedDate,omitempty"`
 	CreatedDate      string `json:"createdDate,omitempty"`
 	Token            string `json:"authToken,omitempty"`

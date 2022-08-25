@@ -31,7 +31,7 @@ const (
 	UpdateUserQuery      = "UPDATE users SET userName='%v',password='%v' where userID=%v;"
 	GetUserVisitorQuery  = "SELECT * FROM vwuservisitor where firstName='%v' and lastName='%v' and middleName='%v' and userName='%v' LIMIT 1;"
 
-	CreateVisitorQuery = "INSERT INTO visitors (userID,firstName,lastName,middleName,address,birthPlace,birthDate,lastModifiedDate,createdDate) VALUES(%v,'%v','%v','%v','%v','%v','%v',NOW(),NOW());"
+	CreateVisitorQuery = "INSERT INTO visitors (userID,firstName,lastName,middleName,address,birthPlace,birthDate,contactNumber,lastModifiedDate,createdDate) VALUES(%v,'%v','%v','%v','%v','%v','%v','%v',NOW(),NOW());"
 	GetVisitorsQuery   = "SELECT * FROM visitors;"
 	GetVisitorByUserID = "SELECT * FROM visitors where userID=%v;"
 	DeleteVisitor      = "DELETE FROM visitors where visitorID=%v;"

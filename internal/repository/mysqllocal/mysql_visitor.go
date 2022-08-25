@@ -13,10 +13,10 @@ func (svc *mySqlService) CreateVisitor(visitor models.Visitor) (bool, error) {
 	log.Println("Inside mysql:CreateVisitor()")
 	isCreated := true
 	svc.Db = svc.openDBConnection()
-	query := fmt.Sprintf(common.CreateVisitorQuery, visitor.UserID, visitor.FirstName, visitor.LastName, visitor.MiddleName, visitor.Address, visitor.BirthPlace, visitor.BirthDate)
+	query := fmt.Sprintf(common.CreateVisitorQuery, visitor.UserID, visitor.FirstName, visitor.LastName, visitor.MiddleName, visitor.Address, visitor.BirthPlace, visitor.BirthDate, visitor.ContactNumber)
 	_, err := svc.Db.Query(query)
 	if err != nil {
-		log.Println("mysql:CreateVisitor()-> Query Error")
+		log.Println("mysql:CreateVisitor()-> Query Error >> ", err)
 		isCreated = false
 	}
 	defer svc.Db.Close()
@@ -88,6 +88,7 @@ func (svc *mySqlService) GetVisitorById(userID string) (models.Visitor, error) {
 			&visitor.Address,
 			&visitor.BirthPlace,
 			&visitor.BirthDate,
+			&visitor.ContactNumber,
 			&visitor.LastModifiedDate,
 			&visitor.CreatedDate,
 		)

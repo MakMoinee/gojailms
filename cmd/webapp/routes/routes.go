@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -188,7 +189,7 @@ func (svc *routesHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		response.Response(w, errorBuilder)
 		return
 	}
-
+	fmt.Println("Body: ", string(body))
 	err = json.Unmarshal(body, &request)
 	if err != nil {
 		log.Println("Routes:CreateUser() -> Unmarshal Error")

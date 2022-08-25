@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -118,7 +119,7 @@ func (svc *routesHandler) GetVisitorByUserID(w http.ResponseWriter, r *http.Requ
 	errorBuilder := response.ErrorResponse{}
 	query := r.URL.Query()
 	userID := query.Get("uid")
-
+	fmt.Println("UserID >>", userID)
 	if len(userID) == 0 {
 		log.Println("Error in routes:GetVisitorByUserID() -> Empty Userid passed")
 		errorBuilder.ErrorMessage = "Missing Required Parameters"
