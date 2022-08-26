@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 23/05/2022 21:43:58
+ Date: 26/08/2022 14:19:37
 */
 
 SET NAMES utf8mb4;
@@ -69,14 +69,13 @@ CREATE TABLE `users`  (
   `password` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `userType` int NOT NULL,
   PRIMARY KEY (`userID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (4, 'admin', '$2a$14$LB/JqF5eYUcogIs2/L0kbu5AzxYeMhIjyYzPNbM0Nrl9DkATYezY.', 1);
-INSERT INTO `users` VALUES (5, 'user', '$2a$14$TGT/70/VgVWloX2XxXhGAOJEQFS2SPSxuIZyVIF33BLQnkVXWIRLm', 2);
-INSERT INTO `users` VALUES (6, 'sample', '$2a$14$.6kwBoiXe8DT80nbMnvQ2eh9sOJp6xqZKMta9ssuoiKkUu9y5n0Wq', 2);
+INSERT INTO `users` VALUES (11, 'mak', '$2a$14$qYx8PpZmypE5Du4Ynw0anehwk40RRJrjju4XerCOJ7IqyGnxsK/1K', 2);
+INSERT INTO `users` VALUES (12, 'ken', '$2a$14$wNnCpZhpipOQ8IQa77OSo.s.8WzEq0C03IDliI3aWBH5lglQQCtMm', 2);
 
 -- ----------------------------
 -- Table structure for visitors
@@ -91,16 +90,17 @@ CREATE TABLE `visitors`  (
   `address` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `birthPlace` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `birthDate` datetime NOT NULL,
+  `contactNumber` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `lastModifiedDate` datetime NOT NULL,
   `createdDate` datetime NOT NULL,
   PRIMARY KEY (`visitorID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of visitors
 -- ----------------------------
-INSERT INTO `visitors` VALUES (2, 3, 'Kennen', 'Borbon', 'Comaling', 'Purok 4A Poblacion, Valencia City, Bukidnon', 'New Bataan, Compostella Valley', '1998-10-13 11:45:18', '2022-05-06 22:29:45', '2022-05-06 22:29:45');
-INSERT INTO `visitors` VALUES (3, 6, 'User', 'X', 'User', ' Valencia City, Bukidnon', 'BPH Kibawer', '1998-10-13 11:45:18', '2022-05-10 18:13:20', '2022-05-10 18:13:20');
+INSERT INTO `visitors` VALUES (4, 11, 'mak', 'mak', 'mak', 'Door 10 Rahmann San Jose Extension, Cebu City', 'New Bataan Compostella Valley', '1998-10-13 00:00:00', '09365861683', '2022-08-25 23:13:00', '2022-08-25 23:13:00');
+INSERT INTO `visitors` VALUES (5, 12, 'Kennen', 'Borbon', 'Comaling', 'Purok 4A Poblacion Valencia City, Bukidnon', 'New Bataan Compostella Valley', '1998-10-13 00:00:00', '09269440075', '2022-08-25 23:57:38', '2022-08-25 23:57:38');
 
 -- ----------------------------
 -- View structure for vwgetallinmates
