@@ -1,6 +1,6 @@
 module github.com/MakMoinee/gojailms
 
-go 1.18
+go 1.19
 
 require (
 	github.com/MakMoinee/go-mith v1.2.1
