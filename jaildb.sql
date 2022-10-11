@@ -3,15 +3,15 @@
 
  Source Server         : Local
  Source Server Type    : MySQL
- Source Server Version : 80029
+ Source Server Version : 80030 (8.0.30)
  Source Host           : localhost:3306
  Source Schema         : jaildb
 
  Target Server Type    : MySQL
- Target Server Version : 80029
+ Target Server Version : 80030 (8.0.30)
  File Encoding         : 65001
 
- Date: 26/08/2022 14:19:37
+ Date: 11/10/2022 14:45:29
 */
 
 SET NAMES utf8mb4;
@@ -52,7 +52,7 @@ CREATE TABLE `inmates`  (
   `lastModifiedDate` datetime NOT NULL,
   `createdDate` datetime NOT NULL,
   PRIMARY KEY (`inmateID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of inmates
@@ -69,13 +69,16 @@ CREATE TABLE `users`  (
   `password` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `userType` int NOT NULL,
   PRIMARY KEY (`userID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
 INSERT INTO `users` VALUES (11, 'mak', '$2a$14$qYx8PpZmypE5Du4Ynw0anehwk40RRJrjju4XerCOJ7IqyGnxsK/1K', 2);
 INSERT INTO `users` VALUES (12, 'ken', '$2a$14$wNnCpZhpipOQ8IQa77OSo.s.8WzEq0C03IDliI3aWBH5lglQQCtMm', 2);
+INSERT INTO `users` VALUES (13, 'sheen', '$2a$14$xkHvYqlUbhSQYRAXRcmVKO/TDgRshJOBjyOgNQEld/yqWB/D.bxqy', 2);
+INSERT INTO `users` VALUES (14, 'admin', '$2a$14$gVwmYuaMGBPH9xsRx8y5iePZQ9RcrMtBkNXn5f4kHuCRjYWyGfB4O', 1);
+INSERT INTO `users` VALUES (15, 'sheenie', '$2a$14$lg77uAmF8jrBEsCzEqT.YuyhnSBqmYOy0qb0XIqLGzKcn5fFkslkS', 2);
 
 -- ----------------------------
 -- Table structure for visitors
@@ -94,13 +97,15 @@ CREATE TABLE `visitors`  (
   `lastModifiedDate` datetime NOT NULL,
   `createdDate` datetime NOT NULL,
   PRIMARY KEY (`visitorID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of visitors
 -- ----------------------------
 INSERT INTO `visitors` VALUES (4, 11, 'mak', 'mak', 'mak', 'Door 10 Rahmann San Jose Extension, Cebu City', 'New Bataan Compostella Valley', '1998-10-13 00:00:00', '09365861683', '2022-08-25 23:13:00', '2022-08-25 23:13:00');
 INSERT INTO `visitors` VALUES (5, 12, 'Kennen', 'Borbon', 'Comaling', 'Purok 4A Poblacion Valencia City, Bukidnon', 'New Bataan Compostella Valley', '1998-10-13 00:00:00', '09269440075', '2022-08-25 23:57:38', '2022-08-25 23:57:38');
+INSERT INTO `visitors` VALUES (6, 13, 'Sheenie', 'Borbon', 'Ucab', 'Door 10 Rahmann Extension, Kamputhaw, Cebu City', 'Purok 10 Poblacion Valencia City Bukidnon', '2003-12-22 00:00:00', '09269440075', '2022-08-29 22:46:05', '2022-08-29 22:46:05');
+INSERT INTO `visitors` VALUES (7, 15, 'Sheenie', 'Borbon', 'x', 'Door 10 Rahmann Extension ', 'purok 10 Poblacion ', '2003-12-22 00:00:00', '09365861683', '2022-10-11 01:23:03', '2022-10-11 01:23:03');
 
 -- ----------------------------
 -- View structure for vwgetallinmates
