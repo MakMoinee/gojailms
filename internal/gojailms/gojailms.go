@@ -30,6 +30,7 @@ type JailIntf interface {
 
 	CreateInmate(inmate models.Inmates) (bool, error)
 	GetInmates() ([]models.Inmates, error)
+	InsertVisitorHistory(visitorHistory models.VisitorHistoryRequest) (bool, error)
 }
 
 func NewJailMs() JailIntf {
@@ -138,4 +139,9 @@ func (svc *JailMs) UpdateUserVisitor(userVisitor models.UserVisitor) (bool, erro
 func (svc *JailMs) GetUserById(userID string) (models.Users, error) {
 	log.Println("Inside gojailms:GetUserById()")
 	return service.SendFetchUserById(userID, svc.MySqlService)
+}
+
+func (svc *JailMs) InsertVisitorHistory(visitorHistory models.VisitorHistoryRequest) (bool, error) {
+	log.Println("Inside gojailms:InsertVisitorHistory()")
+	return service.SendInsertVisitorHistory(visitorHistory, svc.MySqlService)
 }

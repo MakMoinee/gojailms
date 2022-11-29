@@ -41,6 +41,7 @@ type RoutesIntf interface {
 
 	CreateInmate(w http.ResponseWriter, r *http.Request)
 	GetInmates(w http.ResponseWriter, r *http.Request)
+	InsertVisitorHistory(w http.ResponseWriter, r *http.Request)
 }
 
 func newRoutes() RoutesIntf {
@@ -107,6 +108,9 @@ func initiateRoutes(httpService *goserve.Service, handler RoutesIntf) {
 
 	httpService.Router.Get(common.GetInmatePath, handler.GetInmates)
 	infos = append(infos, routesStruct{RouteName: "GetInmates", RouteValue: common.GetInmatePath})
+
+	httpService.Router.Post(common.InsertVisitorHistoryPath, handler.InsertVisitorHistory)
+	infos = append(infos, routesStruct{RouteName: "InsertVisitorHistory", RouteValue: common.InsertVisitorHistoryPath})
 
 	set["routes"] = infos
 	set["version"] = common.SERVICE_VERSION

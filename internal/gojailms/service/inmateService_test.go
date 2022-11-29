@@ -80,6 +80,10 @@ func (svc *mockMySqlService) GetUserById(userId string) (models.Users, error) {
 	return models.Users{}, nil
 }
 
+func (svc *mockMySqlService) InsertVisitorHistory(remarks string, visitorId string) (bool, error) {
+	return false, nil
+}
+
 func newMockMySqlService() mysqllocal.MysqlIntf {
 	svc := mockMySqlService{}
 
