@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/MakMoinee/go-mith/pkg/response"
 	"github.com/MakMoinee/gojailms/internal/gojailms/models"
@@ -119,6 +120,7 @@ func (svc *routesHandler) GetVisitorByUserID(w http.ResponseWriter, r *http.Requ
 	errorBuilder := response.ErrorResponse{}
 	query := r.URL.Query()
 	userID := query.Get("uid")
+	withUser := query.Get("withUser")
 	fmt.Println("UserID >>", userID)
 	if len(userID) == 0 {
 		log.Println("Error in routes:GetVisitorByUserID() -> Empty Userid passed")
@@ -135,6 +137,24 @@ func (svc *routesHandler) GetVisitorByUserID(w http.ResponseWriter, r *http.Requ
 		errorBuilder.ErrorStatus = http.StatusInternalServerError
 		response.Error(w, errorBuilder)
 		return
+	}
+
+	if strings.EqualFold(withUser, "true") {
+		user, err := svc.JailMs.GetUserById(userID)
+		if err != nil {
+			log.Println("Error in routes:GetVisitorByUserID() -> Erorr in getting user by userid")
+			errorBuilder.ErrorMessage = err.Error()
+			errorBuilder.ErrorStatus = http.StatusInternalServerError
+			response.Error(w, errorBuilder)
+			return
+		}
+		userVisitor := models.UserVisitor2{}
+		userVisitor.User = user
+		userVisitor.Visitor = visitor
+
+		response.Success(w, userVisitor)
+		return
+
 	}
 	response.Success(w, visitor)
 }

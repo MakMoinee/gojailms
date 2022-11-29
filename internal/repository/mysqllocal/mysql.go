@@ -29,6 +29,7 @@ type MysqlIntf interface {
 	DeleteUser(id string) (bool, error)
 	UpdateUser(user models.Users) (bool, error)
 	LogUser(user models.Users) (bool, models.Users, error)
+	GetUserById(userId string) (models.Users, error)
 	GetUserVisitor(userVisitor models.UserVisitor) (models.UserVisitor, error)
 
 	CreateVisitor(visitor models.Visitor) (bool, error)
@@ -210,4 +211,28 @@ func (svc *mySqlService) GetUserVisitor(requestUserVisitor models.UserVisitor) (
 	}
 
 	return userVisitor, err
+}
+
+func (svc *mySqlService) GetUserById(userId string) (models.Users, error) {
+	users := models.Users{}
+	var err error
+
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.SelectUserByIDQuery, userId)
+	result, err := svc.Db.Query(query)
+	if err != nil {
+		log.Println(err.Error())
+		return users, err
+	}
+	defer svc.Db.Close()
+
+	for result.Next() {
+		err = result.Scan(&users.UserID, &users.UserName, &users.UserPassword, &users.UserType)
+		if err != nil {
+			log.Println(err.Error())
+			return users, err
+		}
+	}
+	defer result.Close()
+	return users, err
 }

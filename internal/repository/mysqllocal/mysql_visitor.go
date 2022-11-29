@@ -48,6 +48,7 @@ func (svc *mySqlService) GetVisitors() ([]models.Visitor, error) {
 			&visitor.Address,
 			&visitor.BirthPlace,
 			&visitor.BirthDate,
+			&visitor.ContactNumber,
 			&visitor.LastModifiedDate,
 			&visitor.CreatedDate,
 		)

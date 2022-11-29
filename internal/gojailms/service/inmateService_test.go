@@ -76,6 +76,10 @@ func (svc *mockMySqlService) CreateInmate(inmate models.Inmates) (bool, error) {
 	return true, nil
 }
 
+func (svc *mockMySqlService) GetUserById(userId string) (models.Users, error) {
+	return models.Users{}, nil
+}
+
 func newMockMySqlService() mysqllocal.MysqlIntf {
 	svc := mockMySqlService{}
 

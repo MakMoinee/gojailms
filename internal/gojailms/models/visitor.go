@@ -31,3 +31,8 @@ type UserVisitor struct {
 	CreatedDate      string `json:"createdDate,omitempty"`
 	Token            string `json:"authToken,omitempty"`
 }
+
+type UserVisitor2 struct {
+	User    Users   `json:"users,omitempty"`
+	Visitor Visitor `json:"visitor,omitempty"`
+}

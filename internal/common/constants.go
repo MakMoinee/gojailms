@@ -29,6 +29,7 @@ const (
 	InsertAdminUserQuery = "INSERT INTO users (userName,password,userType) VALUES ('%v','%v',1);"
 	DeleteUserQuery      = "DELETE FROM users where userID=%v;"
 	UpdateUserQuery      = "UPDATE users SET userName='%v',password='%v' where userID=%v;"
+	SelectUserByIDQuery  = "SELECT * FROM users where userID=%v;"
 	GetUserVisitorQuery  = "SELECT * FROM vwuservisitor where firstName='%v' and lastName='%v' and middleName='%v' and userName='%v' LIMIT 1;"
 
 	CreateVisitorQuery = "INSERT INTO visitors (userID,firstName,lastName,middleName,address,birthPlace,birthDate,contactNumber,lastModifiedDate,createdDate) VALUES(%v,'%v','%v','%v','%v','%v','%v','%v',NOW(),NOW());"

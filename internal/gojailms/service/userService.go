@@ -111,6 +111,17 @@ func SendLogUser(user models.Users, mysql mysqllocal.MysqlIntf) (bool, models.Us
 	return isValidUser, validUser, err
 }
 
+func SendFetchUserById(userId string, mysql mysqllocal.MysqlIntf) (models.Users, error) {
+	log.Println("Inside userService:SendFetchUserById()")
+
+	if len(userId) == 0 {
+		return models.Users{}, errors.New("empty userid")
+	}
+
+	return mysql.GetUserById(userId)
+
+}
+
 func ValidateUserRequest(user models.Users) error {
 	var err error
 	if len(user.UserName) == 0 || len(user.UserPassword) == 0 {
