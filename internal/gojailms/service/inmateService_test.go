@@ -84,6 +84,10 @@ func (svc *mockMySqlService) InsertVisitorHistory(remarks string, visitorId stri
 	return false, nil
 }
 
+func (svc *mockMySqlService) GetAllVisitorHistory() ([]models.VisitorHistory, error) {
+	return []models.VisitorHistory{}, nil
+}
+
 func newMockMySqlService() mysqllocal.MysqlIntf {
 	svc := mockMySqlService{}
 

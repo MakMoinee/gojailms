@@ -43,6 +43,7 @@ type MysqlIntf interface {
 	CreateAdmin(user models.Users) (bool, error)
 
 	InsertVisitorHistory(remarks string, visitorId string) (bool, error)
+	GetAllVisitorHistory() ([]models.VisitorHistory, error)
 }
 
 func NewUserMySqlService() MysqlIntf {

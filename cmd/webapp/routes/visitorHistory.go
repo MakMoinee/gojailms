@@ -45,3 +45,30 @@ func (svc *routesHandler) InsertVisitorHistory(w http.ResponseWriter, r *http.Re
 	successResponse := response.SuccessResponse{Message: "Successfully inserted visitor history"}
 	response.Success(w, successResponse)
 }
+
+func (svc *routesHandler) GetAllVisitorHistory(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside routes->visitor:GetAllVisitorHistory()")
+	errorBuilder := response.ErrorResponse{}
+	searchKey := r.URL.Query().Get("search")
+	if len(searchKey) == 0 {
+
+	}
+	list, err := svc.JailMs.GetAllVisitorHistory()
+	if err != nil {
+		log.Println("routes:GetAllVisitorHistory() -> Error in Getting the Visitor History")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+	if len(list) == 0 {
+		log.Println("routes:GetAllVisitorHistory() -> Empty Visitor History")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = "No Visitor History Recorded"
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	response.Success(w, list)
+
+}

@@ -15,3 +15,8 @@ func SendInsertVisitorHistory(visitorHistory models.VisitorHistoryRequest, mysql
 	remarks = strings.ReplaceAll(remarks, "'", "\\'")
 	return mysql.InsertVisitorHistory(visitorID, remarks)
 }
+
+func SendGetAllVisitorHistory(mysql mysqllocal.MysqlIntf) ([]models.VisitorHistory, error) {
+	log.Println("Inside service:SendInsertVisitorHistory()")
+	return mysql.GetAllVisitorHistory()
+}

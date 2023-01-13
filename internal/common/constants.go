@@ -19,6 +19,7 @@ const (
 	CreateInmatePath         = "/create/jms/inmate"
 	GetInmatePath            = "/get/jms/inmate"
 	InsertVisitorHistoryPath = "/inser/visitor/history"
+	GetAllVisitorHistoryPath = "/all/visitor/history"
 
 	ContentTypeKey   = "Content-Type"
 	ContentTypeValue = "application/json; charset=UTF-8"
@@ -34,10 +35,11 @@ const (
 	InsertVisitorHistoryQuery = "INSERT INTO visitorhistory (visitorID,remarks,visitedDateTime) VALUES(%v,'%v',NOW())"
 	GetUserVisitorQuery       = "SELECT * FROM vwuservisitor where firstName='%v' and lastName='%v' and middleName='%v' and userName='%v' LIMIT 1;"
 
-	CreateVisitorQuery = "INSERT INTO visitors (userID,firstName,lastName,middleName,address,birthPlace,birthDate,contactNumber,lastModifiedDate,createdDate) VALUES(%v,'%v','%v','%v','%v','%v','%v','%v',NOW(),NOW());"
-	GetVisitorsQuery   = "SELECT * FROM visitors;"
-	GetVisitorByUserID = "SELECT * FROM visitors where userID=%v;"
-	DeleteVisitor      = "DELETE FROM visitors where visitorID=%v;"
+	CreateVisitorQuery         = "INSERT INTO visitors (userID,firstName,lastName,middleName,address,birthPlace,birthDate,contactNumber,lastModifiedDate,createdDate) VALUES(%v,'%v','%v','%v','%v','%v','%v','%v',NOW(),NOW());"
+	GetVisitorsQuery           = "SELECT * FROM visitors;"
+	GetAllVisitorsHistoryQuery = "SELECT * FROM vwvisithistory"
+	GetVisitorByUserID         = "SELECT * FROM visitors where userID=%v;"
+	DeleteVisitor              = "DELETE FROM visitors where visitorID=%v;"
 
 	GetInmatesQuery   = "SELECT * FROM inmates;"
 	CreateInmateQuery = "INSERT INTO inmates (crimeID,firstName,lastName,middleName,address,birthPlace,birthDate,lastModifiedDate,createdDate) VALUES (%v,'%v','%v','%v','%v','%v','%v',NOW(),NOW());"
