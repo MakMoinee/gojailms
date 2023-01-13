@@ -39,7 +39,7 @@ const (
 
 	CreateVisitorQuery         = "INSERT INTO visitors (userID,firstName,lastName,middleName,address,birthPlace,birthDate,contactNumber,lastModifiedDate,createdDate) VALUES(%v,'%v','%v','%v','%v','%v','%v','%v',NOW(),NOW());"
 	GetVisitorsQuery           = "SELECT * FROM visitors;"
-	GetAllVisitorsHistoryQuery = "SELECT * FROM vwvisithistory"
+	GetAllVisitorsHistoryQuery = "SELECT * FROM vwvisithistory ORDER BY visitedDateTime DESC"
 	GetVisitorByUserID         = "SELECT * FROM visitors where userID=%v;"
 	DeleteVisitor              = "DELETE FROM visitors where visitorID=%v;"
 
