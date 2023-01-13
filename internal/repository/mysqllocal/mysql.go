@@ -44,6 +44,8 @@ type MysqlIntf interface {
 
 	InsertVisitorHistory(remarks string, visitorId string) (bool, error)
 	GetAllVisitorHistory() ([]models.VisitorHistory, error)
+
+	UpdateVisitor(visitor models.Visitor) (bool, error)
 }
 
 func NewUserMySqlService() MysqlIntf {

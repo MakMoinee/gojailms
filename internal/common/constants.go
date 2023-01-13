@@ -20,6 +20,7 @@ const (
 	GetInmatePath            = "/get/jms/inmate"
 	InsertVisitorHistoryPath = "/inser/visitor/history"
 	GetAllVisitorHistoryPath = "/all/visitor/history"
+	UpdateVisitorPath        = "/update/jms/visitor"
 
 	ContentTypeKey   = "Content-Type"
 	ContentTypeValue = "application/json; charset=UTF-8"
@@ -31,6 +32,7 @@ const (
 	InsertAdminUserQuery      = "INSERT INTO users (userName,password,userType) VALUES ('%v','%v',1);"
 	DeleteUserQuery           = "DELETE FROM users where userID=%v;"
 	UpdateUserQuery           = "UPDATE users SET userName='%v',password='%v' where userID=%v;"
+	UpdateVisitorQuery        = "UPDATE visitors SET address='%v', contactNumber='%v' where visitorID=%v;"
 	SelectUserByIDQuery       = "SELECT * FROM users where userID=%v;"
 	InsertVisitorHistoryQuery = "INSERT INTO visitorhistory (visitorID,remarks,visitedDateTime) VALUES(%v,'%v',NOW())"
 	GetUserVisitorQuery       = "SELECT * FROM vwuservisitor where firstName='%v' and lastName='%v' and middleName='%v' and userName='%v' LIMIT 1;"

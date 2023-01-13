@@ -13,6 +13,46 @@ import (
 	"github.com/MakMoinee/gojailms/internal/gojailms/service"
 )
 
+func (svc *routesHandler) UpdateVisitor(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside routes->visitor:CreateVisitor()")
+	visitor := models.Visitor{}
+	errorBuilder := response.ErrorResponse{}
+	byteBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	err = json.Unmarshal(byteBody, &visitor)
+	if err != nil {
+		log.Println("routes:UpdateVisitor() -> Unmarshal Error")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	isCreated, err := svc.JailMs.UpdateVisitor(visitor)
+	if err != nil {
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = err.Error()
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	if !isCreated {
+		log.Println("routes:CreateVisitor() -> Fail to Create User")
+		errorBuilder.ErrorStatus = http.StatusInternalServerError
+		errorBuilder.ErrorMessage = "Failed to Create User"
+		response.Error(w, errorBuilder)
+		return
+	}
+
+	response.Success(w, "Successfully Updated User")
+}
+
 func (svc *routesHandler) CreateVisitor(w http.ResponseWriter, r *http.Request) {
 	log.Println("Inside routes->visitor:CreateVisitor()")
 	visitor := models.Visitor{}

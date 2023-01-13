@@ -67,3 +67,8 @@ func SendDeleteVisitor(visitorID string, mysql mysqllocal.MysqlIntf) (bool, erro
 
 	return isDeleted, err
 }
+
+func SendUpdateVisitor(visitor models.Visitor, mysql mysqllocal.MysqlIntf) (bool, error) {
+	log.Println("Inside visitorService:SendUpdateVisitor()")
+	return mysql.UpdateVisitor(visitor)
+}

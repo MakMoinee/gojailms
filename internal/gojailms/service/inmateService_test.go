@@ -88,6 +88,10 @@ func (svc *mockMySqlService) GetAllVisitorHistory() ([]models.VisitorHistory, er
 	return []models.VisitorHistory{}, nil
 }
 
+func (svc *mockMySqlService) UpdateVisitor(visitor models.Visitor) (bool, error) {
+	return false, nil
+}
+
 func newMockMySqlService() mysqllocal.MysqlIntf {
 	svc := mockMySqlService{}
 

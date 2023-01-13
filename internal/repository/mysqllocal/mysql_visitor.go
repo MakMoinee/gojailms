@@ -105,6 +105,21 @@ func (svc *mySqlService) GetVisitorById(userID string) (models.Visitor, error) {
 	return visitor, err
 }
 
+func (svc *mySqlService) UpdateVisitor(visitor models.Visitor) (bool, error) {
+	isUpdated := true
+	var err error
+
+	svc.Db = svc.openDBConnection()
+	query := fmt.Sprintf(common.UpdateVisitorQuery, visitor.Address, visitor.ContactNumber, visitor.VisitorID)
+	_, err = svc.Db.Query(query)
+	if err != nil {
+		isUpdated = false
+		return isUpdated, err
+	}
+
+	return isUpdated, err
+}
+
 func (svc *mySqlService) DeleteVisitor(id string) (bool, error) {
 	isDeleted := true
 	var err error
