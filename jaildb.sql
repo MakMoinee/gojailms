@@ -11,7 +11,7 @@
  Target Server Version : 80030 (8.0.30)
  File Encoding         : 65001
 
- Date: 13/01/2023 11:46:25
+ Date: 23/01/2023 16:44:40
 */
 
 SET NAMES utf8mb4;
@@ -30,11 +30,12 @@ CREATE TABLE `crime`  (
   `lastModifiedDate` datetime NOT NULL,
   `createdDate` datetime NOT NULL,
   PRIMARY KEY (`crimeID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crime
 -- ----------------------------
+INSERT INTO `crime` VALUES (1, 'murder', NULL, 2, '2022-10-22 00:00:00', '2023-01-21 21:10:08', '2023-01-21 21:10:12');
 
 -- ----------------------------
 -- Table structure for inmates
@@ -57,7 +58,7 @@ CREATE TABLE `inmates`  (
 -- ----------------------------
 -- Records of inmates
 -- ----------------------------
-INSERT INTO `inmates` VALUES (1, 1, 'Sample', 'Sample', 'X', 'Purok4A Poblacion Valencia City, Bukidnon', 'Zamboanga City', '1998-02-01 00:00:00', '2022-03-19 20:42:46', '2022-03-19 20:42:46');
+INSERT INTO `inmates` VALUES (1, 1, 'Ricardo', 'Dalisay', 'X', 'Purok4A Poblacion Valencia City, Bukidnon', 'Zamboanga City', '1998-02-01 00:00:00', '2022-03-19 20:42:46', '2022-03-19 20:42:46');
 
 -- ----------------------------
 -- Table structure for users
@@ -86,16 +87,18 @@ CREATE TABLE `visitorhistory`  (
   `visitorID` int NOT NULL,
   `remarks` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `visitedDateTime` datetime NOT NULL,
+  `visitedOut` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`visitorHistoryID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of visitorhistory
 -- ----------------------------
-INSERT INTO `visitorhistory` VALUES (2, 9, 'she\'s wearing black vest', '2022-11-30 03:34:34');
-INSERT INTO `visitorhistory` VALUES (3, 9, 'She\'s wearing black shirt with maong pants.', '2022-11-30 12:39:27');
-INSERT INTO `visitorhistory` VALUES (4, 10, 'White shirt', '2023-01-13 08:39:48');
-INSERT INTO `visitorhistory` VALUES (5, 10, 'blue cap', '2023-01-13 09:32:28');
+INSERT INTO `visitorhistory` VALUES (2, 9, 'she\'s wearing black vest', '2022-11-30 03:34:34', NULL);
+INSERT INTO `visitorhistory` VALUES (3, 9, 'She\'s wearing black shirt with maong pants.', '2022-11-30 12:39:27', NULL);
+INSERT INTO `visitorhistory` VALUES (4, 10, 'White shirt', '2023-01-13 08:39:48', NULL);
+INSERT INTO `visitorhistory` VALUES (5, 10, 'blue cap', '2023-01-13 09:32:28', NULL);
+INSERT INTO `visitorhistory` VALUES (6, 10, 'white tshirt', '2023-01-23 16:22:32', NULL);
 
 -- ----------------------------
 -- Table structure for visitors
@@ -137,6 +140,6 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vwuservisitor` AS select
 -- View structure for vwvisithistory
 -- ----------------------------
 DROP VIEW IF EXISTS `vwvisithistory`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vwvisithistory` AS select `visitorhistory`.`visitorHistoryID` AS `visitorHistoryID`,`visitors`.`userID` AS `userID`,`visitors`.`firstName` AS `firstName`,`visitors`.`lastName` AS `lastName`,`visitors`.`middleName` AS `middleName`,`visitorhistory`.`remarks` AS `remarks`,`visitorhistory`.`visitedDateTime` AS `visitedDateTime` from (`visitorhistory` join `visitors` on((`visitorhistory`.`visitorID` = `visitors`.`visitorID`)));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vwvisithistory` AS select `visitorhistory`.`visitorHistoryID` AS `visitorHistoryID`,`visitors`.`userID` AS `userID`,`visitors`.`firstName` AS `firstName`,`visitors`.`lastName` AS `lastName`,`visitors`.`middleName` AS `middleName`,`visitorhistory`.`remarks` AS `remarks`,`visitorhistory`.`visitedDateTime` AS `visitedDateTime`,`visitorhistory`.`visitedOut` AS `visitedOut` from (`visitorhistory` join `visitors` on((`visitorhistory`.`visitorID` = `visitors`.`visitorID`)));
 
 SET FOREIGN_KEY_CHECKS = 1;
