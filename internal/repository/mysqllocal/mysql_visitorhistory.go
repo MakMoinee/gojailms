@@ -45,9 +45,10 @@ func (svc *mySqlService) GetAllVisitorHistory() ([]models.VisitorHistory, error)
 			&visitor.MiddleName,
 			&visitor.Remarks,
 			&visitor.VisitDate,
+			&visitor.VisitOut,
 		)
 		if err != nil {
-			log.Println("mysql:GetVisitors() -> Error in Scanning the Result")
+			log.Println("mysql:GetVisitors() -> Error in Scanning the Result -->", err.Error())
 			break
 		}
 		list = append(list, visitor)
